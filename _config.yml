@@ -9,7 +9,7 @@ pygments: true
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
-title : Hi, I'm Adam Ferguson
+title : Hi. I'm Adam Ferguson
 author :
   name : Adam Ferguson
   email : Adam.Brugh.Ferguson@gmail.com
@@ -66,7 +66,7 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : jekyllbootstrap
+      short_name : mygithubjekyllsite
     livefyre :
       site_id : 123
     intensedebate :
@@ -81,7 +81,7 @@ JB :
   analytics :
     provider : google
     google : 
-        tracking_id : 'UA-123-12'
+        tracking_id : 'UA-28726555-1'
     getclicky :
       site_id : 
 
