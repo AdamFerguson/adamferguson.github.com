@@ -9,7 +9,7 @@ tags: ["markdown", "learning"]
 In which I teach myself Markdown
 ================================
 
-This is my Jekyll based blog, hosted on Github. As, all content in Jekyll is written in Markdown, 
+This is my Jekyll based blog, hosted on Github. As all content in Jekyll is written in Markdown, 
 I've decided to take this opportunity to teach myself/document as many parts of markdown as I can.
 
 (This has been borrowed heavily from documentation found on [Daring Fireball](http://daringfireball.net/projects/markdown/basics))
