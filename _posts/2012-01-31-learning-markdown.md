@@ -74,7 +74,7 @@ _** Note: you can mix and match..._ ___YAH!!!___
 
 ### ordered list
 
-Any lines preceded by a digit followed by a period will be numbered. Doesn't have to start with one:
+Any lines preceded by a digit followed by a period will be numbered. Doesn't have to start with one (but will start with one when rendered _anyway_):
 
 4. Picking it up late
 5. In the list ordering
