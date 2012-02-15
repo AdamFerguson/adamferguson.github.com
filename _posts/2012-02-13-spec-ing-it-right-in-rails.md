@@ -34,6 +34,28 @@ I've [seen](http://speakerdeck.com/u/qrush/p/test-driven-development) it said th
 
 Generally, these four concepts can be accomplished using the following constructs in RSpec:
 
-### Setup
+## Setup
 
+Refers to the creation/initialization of any objects or methods that are used in the execution of the method being tested. 
+
+### Subject
+
+I'm currently thinking of this as the object whose state is being verified during the test. Can be:
+
+* Implicit - the Class passed to the describe method. An instance of that class is exposed through subject(). Like:
+
+    describe Array do
+        ...
+        subject.should ...
+    end
+
+In this context, an Array instance is returned by subject.
+
+* Explicit - defined by passing a block to the subject method in a group scope. The return value of the block is used as the value of the subject. Like:
+
+    describe Array do
+        subject { [1,2,3] }
+        ...
+        subject.should ...
+    end
 
