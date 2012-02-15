@@ -13,7 +13,7 @@ Spec-in it and spec-in it and spec-in it well
 
 So one of the things I've found most frustrating about getting started in doing rails development is the testing
 expectations that come along with it. Don't get me wrong, I think the emphasis on automated testing is an excellent idea.
-Having worked on a complicated website that was developed in a dynamic server side language and no automated tests, I can
+Having worked on a complicated website that was developed in a dynamic server side language with no automated tests, I can
 definitely appreciate their value. However, having never written tests before, I wasn't familiar with all the types of tests that are supposed to be written in the course of writing a Rails application, and haven't totally found a writeup
 of what's expected that _clicked_ with me (besides the fact that I still have so much to learn about Rails itself). I'm currently working in an environment where writing tests along with the code is expected. So, for a while I've been meaning to sit down and document the types of tests that should go along with all the types of code I can think of in a typical Rails app. I've read through many lines of testing code, waiting to have that moment where it clicks. But I'm betting just documenting, on a verbal level, all the types of tests will go much further towards getting me there. So, that's what this post is about. I'm going to be writing this assuming that RSpec is the library being used for testing.
 
@@ -44,19 +44,21 @@ I'm currently thinking of this as the object whose state is being verified durin
 
 * Implicit - the Class passed to the describe method. An instance of that class is exposed through subject(). Like:
 
+    {% highlight ruby %}
     describe Array do
         ...
         subject.should ...
     end
+    {% endhighlight %}
 
 In this context, an Array instance is returned by subject.
 
 * Explicit - defined by passing a block to the subject method in a group scope. The return value of the block is used as the value of the subject. Like:
 
+    {% highlight ruby %}
     describe Array do
         subject { [1,2,3] }
         ...
         subject.should ...
     end
-
-test....
+    {% endhighlight %}

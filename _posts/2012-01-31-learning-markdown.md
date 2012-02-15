@@ -14,6 +14,8 @@ I've decided to take this opportunity to teach myself/document as many parts of 
 
 (This has been borrowed heavily from documentation found on [Daring Fireball](http://daringfireball.net/projects/markdown/basics))
 
+Update: Found a solution for syntax highlighting at [Pygments](http://pygments.org/languages/)
+
 Headers
 -------
 
