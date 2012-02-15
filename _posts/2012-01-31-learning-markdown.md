@@ -64,12 +64,12 @@ Use three underscores or asterisk characters for both ___bold___ and ***italics*
 Any lines that begin with one of these characters will be part of an unordered list ___(asterisk, plus, minus)___
 
 * Astericks
-* can be used (*)
+* can be used
 
 + As can 
-+ plus signs (+)
++ plus signs
 
-- minus signs (-)
+- minus signs
 - can as well
 
 _** Note: you can mix and match..._ ___YAH!!!___
