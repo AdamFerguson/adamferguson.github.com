@@ -8,6 +8,8 @@ tags: ["rails", "diaspora", "deployment"]
 
 After spending the majority of my Sunday morning browsing the web, mostly reading programming related posts, as I increasingly find myself doing, I decided that a fun thing to do this morning would be deploying an instance of Diaspora to my linode. You know, for the educational benefit and whatnot. Not that I actually intend to use Diaspora on the server, merely that it's one of the larger (the largest?) available open source Rails projects that I know of and I think it would fun to try and take that code base and get it running on my own server.
 
+### Run it locally
+
 So, first things first, pull down the code locally:
 
     {% highlight bash %}
@@ -39,3 +41,13 @@ Oops, looks like they have a specific application.yml file, reading through it, 
     {% endhighlight %}
     
 And, there we have it. Up and running locally, simple as that!
+
+### Run it on the server
+
+I already have a linode (running ubuntu 10.04, upgrade to 12.04 forthcoming) set up with the following:
+
+* nginx
+* mysql
+* rvm
+
+So I have all those dependencies set up. I haven't messed around with Capistrano configuration much so I think I'll be using that on the deploy, just to get a little practice. Also, apparently diaspora requires https for deployment, so this will give me the opportunity to practice getting that set up. Also, apparently there's a dependency on Redis, so I'll get to play around with that also. I'll be using thin as the webserver, since that's what diaspora recommends, though Unicorn is supposed to be the new hotness.
