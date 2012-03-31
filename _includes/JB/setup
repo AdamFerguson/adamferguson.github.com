@@ -5,9 +5,10 @@
   {% if site.JB.setup.provider == "custom" %}
     {% include custom/setup %}
   {% else %}
+    {% assign HOME_PATH = "/" %}
     {% if site.safe and site.JB.BASE_PATH %}
       {% assign BASE_PATH = site.JB.BASE_PATH %}
-      {% assign HOME_PATH = site.JB.BASE_PATH %}
+      {% comment %}{% assign HOME_PATH = site.JB.BASE_PATH %}{% endcomment %}
     {% else %}
       {% assign BASE_PATH = nil %}
       {% assign HOME_PATH = "/" %}
