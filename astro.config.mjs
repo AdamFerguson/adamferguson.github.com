@@ -17,6 +17,11 @@ export default defineConfig({
   site,
   base,
   trailingSlash: "ignore",
+  // Astro v7 changed the default `compressHTML` from `true` (HTML-aware
+  // whitespace) to `'jsx'` (JSX-style, which can glue adjacent inline text
+  // together). Keep the HTML-aware behavior so spaces between inline
+  // elements render as expected.
+  compressHTML: true,
   integrations: [
     sitemap({
       // Only include index pages + blog posts in the sitemap.

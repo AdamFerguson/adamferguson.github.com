@@ -40,7 +40,7 @@ async function main() {
   });
   preview.stderr.on("data", (d) => process.stderr.write(d));
 
-  await waitForServer(BASE, 20000);
+  await waitForServer(BASE, 45000);
 
   const { chromium } = await import("playwright");
   const browser = await chromium.launch();

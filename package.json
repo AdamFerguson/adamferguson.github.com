@@ -17,10 +17,10 @@
     "check": "npm run validate:resume && npm run build"
   },
   "dependencies": {
-    "@astrojs/rss": "^4.0.11",
-    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
     "ajv": "^8.17.1",
-    "astro": "^5.10.0",
+    "astro": "^7.2.4",
     "yaml": "^2.6.0"
   },
   "devDependencies": {
