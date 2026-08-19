@@ -1,0 +1,81 @@
+# Adam Ferguson — résumé · CONCISE variant
+#
+# Executive / one-page style: a single-line profile, a compact two-line skill
+# set, the current role in detail, everything else a one-line entry, and just
+# the degrees. Best when the reader wants the headline, not the history.
+
+basics:
+  name: "Adam Ferguson"
+  label: "Senior Software Engineer"
+  email: "Adam.Brugh.Ferguson@gmail.com"
+  summary: >
+    Senior software engineer — full-stack, cloud/DevOps, and machine learning;
+    15+ years building reliable, end-to-end systems.
+  website: "https://adam-ferguson.com"
+  location:
+    city: "Charlotte"
+    region: "Charlotte, NC"
+  profiles:
+    - network: "Github"
+      username: "AdamFerguson"
+      url: "https://github.com/AdamFerguson"
+    - network: "LinkedIn"
+      username: "adambferg"
+      url: "https://www.linkedin.com/in/adambferg"
+
+skills:
+  - name: "Core"
+    keywords:
+      - "Go"
+      - "Python"
+      - "TypeScript / JavaScript"
+      - "SQL"
+      - "React"
+      - "Node.js / FastAPI"
+  - name: "Cloud & ML"
+    keywords:
+      - "AWS"
+      - "Kubernetes"
+      - "Terraform"
+      - "CI/CD"
+      - "Pandas"
+      - "scikit-learn"
+
+work:
+  - position: "Senior Software Engineer"
+    company: "Delta Bravo"
+    website: "https://deltabravo.ai"
+    startDate: "2020-07-01"
+    summary: "ML solutions for manufacturing clients — models, web apps, and the Kubernetes/CI/CD to run them."
+    highlights:
+      - "Built ML models (Pandas, scikit-learn, XGBoost) to optimize manufacturing processes."
+      - "Shipped React/FastAPI/Hasura apps to visualize predictions; owns Helm, Terraform, and CI/CD."
+
+  - position: "Senior AI Developer"
+    company: "Ally Financial"
+    website: "https://ally.com"
+    startDate: "2019-08-12"
+    endDate: "2020-06-30"
+
+  - position: "Senior Software Engineer"
+    company: "InVue Security Inc."
+    website: "https://invue.com"
+    startDate: "2017-04-10"
+    endDate: "2019-08-09"
+
+  - position: "Data Engineer / App Dev Consultant"
+    company: "Ferguson Software Services (Mood Media)"
+    startDate: "2015-01-10"
+    endDate: "2017-03-31"
+
+education:
+  - institution: "Virginia Tech"
+    area: "Economics"
+    studyType: "Masters - NSF IGERT Fellow"
+    startDate: "2004-05-15"
+    endDate: "2006-05-15"
+  - institution: "Virginia Tech"
+    area: "Economics & Business Information Technology"
+    studyType: "Bachelors"
+    startDate: "2000-08-15"
+    endDate: "2004-05-15"
