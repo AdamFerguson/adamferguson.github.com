@@ -1,0 +1,61 @@
+---
+// About: bio/background. Evolves from the old about.md content plus the
+// "an introduction" draft referenced in the plan.
+import Base from "../../layouts/Base.astro";
+import { url } from "../../utils/url.mjs";
+import { site } from "../../data/site.mjs";
+---
+
+<Base title="About">
+  <article class="post about">
+    <h1 class="post-title">About</h1>
+
+    <p class="lead">
+      I'm Adam — a software and infrastructure engineer based in Charlotte, NC.
+      I build and run the systems behind products: full-stack web applications,
+      cloud platforms, and the data pipelines that feed them.
+    </p>
+
+    <p>
+      My work spans the whole stack and the whole lifecycle. Lately that means
+      machine-learning systems and the infrastructure around them — Kubernetes,
+      Terraform, CI/CD, and the web front-ends that let clients use the results.
+      Earlier it was full-stack product work: Ruby on Rails, Node, React, Angular,
+      and the databases and search systems underneath.
+    </p>
+
+    <p>
+      I care about simple, reliable solutions. The best system is usually the one
+      you can explain, test, and change without fear. I've led architecture
+      decisions, run infrastructure, and done the hands-on feature work — and I
+      like all of it.
+    </p>
+
+    <div class="about__links">
+      <a class="btn" href={url("/resume/")}>View résumé</a>
+      <a class="btn btn--ghost" href={site.social.github} rel="me">GitHub</a>
+      <a class="btn btn--ghost" href={site.social.linkedin}>LinkedIn</a>
+      <a class="btn btn--ghost" href={`mailto:${site.email}`}>Email</a>
+    </div>
+
+    <p class="muted about__aside">
+      (Full history and details on the <a href={url("/resume/")}>résumé</a>.)
+    </p>
+  </article>
+</Base>
+
+<style>
+  .about {
+    max-width: 44rem;
+  }
+  .about__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-block: 1.5rem;
+  }
+  .about__aside {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+  }
+</style>

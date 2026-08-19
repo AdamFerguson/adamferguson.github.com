@@ -1,0 +1,342 @@
+# Adam Ferguson — resume data (single source of truth)
+#
+# Format: JSON Resume schema (https://jsonresume.org), stored as YAML for
+# easier git editing. Validated in CI against @jsonresume/schema via
+# `npm run validate:resume`. Drives /resume/, the home summary, Person
+# JSON-LD, the generated PDF, and (optionally) a Word document.
+#
+# Conventions:
+#   - Dates are ISO YYYY-MM-DD (use YYYY-MM-DD or "present").
+#   - `work[].endDate` omitted for the current role.
+#   - `skills` are grouped; keep each group under ~15 items, curated.
+
+basics:
+  name: "Adam Ferguson"
+  label: "Senior Software Engineer"
+  email: "Adam.Brugh.Ferguson@gmail.com"
+  summary: >
+    Software Engineer with broad experience in full-stack web development,
+    cloud computing, DevOps, data analysis, service-oriented architecture,
+    and systems integration. Strong problem solver with an eye for simple,
+    reliable solutions. Active learner who quickly adapts to new
+    technologies, techniques, and architectures.
+  website: "https://adam-ferguson.com"
+  location:
+    address: ""
+    postalCode: ""
+    city: "Charlotte"
+    countryCode: "US"
+    region: "Charlotte, NC"
+  profiles:
+    - network: "Github"
+      username: "AdamFerguson"
+      url: "https://github.com/AdamFerguson"
+    - network: "LinkedIn"
+      username: "adambferg"
+      url: "https://www.linkedin.com/in/adambferg"
+    - network: "StackOverflow"
+      username: "Adam"
+      url: "https://stackoverflow.com/users/836756/adam"
+
+skills:
+  - name: "Languages"
+    keywords:
+      - "Go"
+      - "Python"
+      - "TypeScript / JavaScript"
+      - "Ruby"
+      - "Bash / Shell"
+      - "Java"
+      - "C#"
+      - "Scala"
+      - "Clojure"
+      - "C"
+      - "SQL"
+  - name: "Cloud & Infrastructure"
+    keywords:
+      - "AWS"
+      - "Google Cloud Platform"
+      - "Kubernetes"
+      - "Helm"
+      - "Terraform"
+      - "Docker"
+      - "Ansible"
+      - "Chef"
+      - "CI/CD (Jenkins, Travis, GitHub Actions)"
+      - "Serverless"
+  - name: "Backend & APIs"
+    keywords:
+      - "Node.js / Express"
+      - "Ruby on Rails"
+      - "Django / Flask"
+      - "FastAPI"
+      - "GraphQL"
+      - "REST"
+      - "Golang services"
+  - name: "Frontend"
+    keywords:
+      - "React / Redux"
+      - "Angular"
+      - "Ember"
+      - "TypeScript"
+      - "HTML / CSS"
+  - name: "Data & ML"
+    keywords:
+      - "PostgreSQL"
+      - "MySQL"
+      - "Redshift"
+      - "Elasticsearch"
+      - "MongoDB"
+      - "Redis"
+      - "Kafka"
+      - "Kinesis"
+      - "Pandas"
+      - "scikit-learn"
+      - "XGBoost"
+      - "ETL / data pipelines"
+  - name: "Practices"
+    keywords:
+      - "TDD / BDD"
+      - "CI/CD"
+      - "Microservices"
+      - "Infrastructure as Code"
+      - "Agile / Scrum"
+      - "Cloud migration"
+
+work:
+  - position: "Senior Software Engineer"
+    company: "Delta Bravo"
+    website: "https://deltabravo.ai"
+    startDate: "2020-07-01"
+    summary: "Delta Bravo is a startup delivering machine learning solutions to manufacturing clients."
+    technologies:
+      - "Kubernetes"
+      - "Helm"
+      - "Terraform"
+      - "React"
+      - "GraphQL"
+      - "Golang"
+      - "PostgreSQL"
+      - "Python"
+      - "Pandas"
+      - "scikit-learn"
+      - "FastAPI"
+      - "Hasura"
+      - "Keycloak"
+      - "Argo"
+    highlights:
+      - "Created ML models (Pandas, scikit-learn, XGBoost) to optimize manufacturing processes for client firms."
+      - "Built web applications for clients to visualize ML model predictions, using React, Hasura, FastAPI, and PostgreSQL."
+      - "Built Helm charts, Terraform modules, and CI/CD pipelines used to deploy web applications."
+      - "Feature development on a Kubernetes-based ML platform in Golang, GraphQL, React, PostgreSQL, and Argo."
+
+  - position: "Senior AI Developer"
+    company: "Ally Financial"
+    website: "https://ally.com"
+    startDate: "2019-08-12"
+    endDate: "2020-06-30"
+    summary: "DevOps and services-based application development for online banking."
+    technologies:
+      - "Kubernetes"
+      - "OpenShift"
+      - "Redis"
+      - "Rasa"
+      - "AWS Lex"
+      - "AWS Lambda"
+      - "Python"
+      - "Terraform"
+      - "Helm"
+      - "JavaScript"
+      - "Jenkins"
+    highlights:
+      - "Built CI/CD pipelines for multiple AI-team services: Terraform for AWS, Helm for OpenShift, Jenkins for CI/CD."
+      - "Led architecture research and adoption of Rasa as the primary component of Ally's chatbot platform."
+      - "Developed and unit-tested AWS Lambda functions for the existing AWS Lex bot in Ally's chatbot platform."
+
+  - position: "Senior Software Engineer"
+    company: "Invue Security Inc."
+    website: "https://invue.com"
+    startDate: "2017-04-10"
+    endDate: "2019-08-09"
+    summary: "InVue Security provides hardware- and software-based security solutions for retailers."
+    technologies:
+      - "Node.js"
+      - "React"
+      - "Google Cloud Platform"
+      - "Java"
+      - "Ansible"
+      - "Sequelize"
+      - "PostgreSQL"
+      - "REST"
+      - "Android"
+      - "AWS IoT"
+      - "Docker"
+      - "GraphQL"
+      - "Elasticsearch"
+    highlights:
+      - "Lead developer on 'Access Manager', a web app for zoning and auditing InVue devices: React frontend, Node.js/Express/PostgreSQL backend, Java app server for in-store device comms, and a native Android app for site setup. Provisioned to GCP with Ansible."
+      - "Lead developer on 'Insight', a reporting web app for planogram compliance and customer interactions on mobile: React/Redux frontend, Node.js/Express backend, device comms via the Serverless framework (AWS Lambda, API Gateway, DynamoDB). Deployed with Ansible and Docker."
+      - "Features, bug fixes, performance enhancements, and sysadmin for 'Microsigns', a microservices web app: Node/PostgreSQL backend, AngularJS frontend, deployed to AWS with Ansible and Docker."
+
+  - position: "Data Engineer and Application Development Consultant"
+    company: "Ferguson Software Services (onsite at Mood Media)"
+    startDate: "2015-01-10"
+    endDate: "2017-03-31"
+    summary: "Consulted with Mood Media on systems integration, ETL, and web application development."
+    technologies:
+      - "Python"
+      - "SQLAlchemy"
+      - "Ruby"
+      - "AWS"
+      - "Ruby on Rails"
+      - "React"
+      - "AngularJS"
+      - "Flask"
+      - "ETL"
+      - "Ansible"
+      - "Hadoop"
+      - "Kafka"
+      - "Redshift"
+      - "Clojure"
+    highlights:
+      - "Integrated multiple systems using ETL with Python and SQLAlchemy."
+      - "Assisted development of a web application using C# backend and AngularJS frontend."
+      - "Developed and maintained multiple Ruby on Rails applications with client-side JS frameworks including React and Backbone."
+      - "Migrated an existing data warehousing solution from MongoDB to Redshift."
+
+  - position: "Web Development Consultant"
+    company: "Ally Financial (through OpenSystems Technologies)"
+    website: "https://ally.com"
+    startDate: "2014-08-15"
+    endDate: "2015-01-07"
+    technologies:
+      - "EmberJS"
+      - "Node.js"
+      - "Broccoli"
+      - "Ember CLI"
+      - "RequireJS"
+      - "SASS/SCSS"
+      - "HTML5"
+      - "CSS3"
+    highlights:
+      - "Part of the team that developed Ally's online banking frontend as an EmberJS application."
+      - "Customized and completed several variants of the team's build process for development and deployment (Rake Pipeline, RequireJS, Broccoli, Ember CLI, ES6)."
+      - "Reworked the build process to create a mobile-specific version of the online banking application with mobile-specific customizations."
+
+  - position: "Senior Software Engineer"
+    company: "Technekes / Connexiolabs"
+    startDate: "2013-02-14"
+    endDate: "2014-08-10"
+    technologies:
+      - "Ruby on Rails"
+      - "Grape"
+      - "Goliath"
+      - "MongoDB"
+      - "PostgreSQL"
+      - "EmberJS"
+      - "Node.js"
+      - "PubNub"
+      - "Elasticsearch"
+      - "Microservices"
+      - "Puppet"
+      - "AWS"
+    highlights:
+      - "Lead developer on the call center application used by all of Technekes' call center employees: EmberJS frontend, Ruby on Rails backend, MongoDB/Elasticsearch/PostgreSQL, Twilio telephony."
+      - "Developed a realtime dashboard (EmberJS + Rails) for administrators to monitor status and listen to ongoing calls, with PubNub for realtime comms."
+      - "Part of a small team split off from Technekes to form product-focused startup 'Connexiolabs'; developed several marketing-focused applications and web services using a microservices architecture."
+
+  - position: "Senior Software Developer"
+    company: "Mood Media / Muzak LLC"
+    startDate: "2011-07-05"
+    endDate: "2013-02-07"
+    technologies:
+      - "Ruby on Rails"
+      - "MySQL"
+      - "Solr"
+      - "Sphinx"
+      - "Node.js"
+      - "Java"
+      - "Android"
+      - "BackboneJS"
+      - "Jenkins"
+      - "Capistrano"
+      - "Chef"
+    highlights:
+      - "Founding member of the New Product Development team; designed and developed multiple web and mobile applications including OnlineDJ, Klikt, Sonictap, and MyMuzak."
+      - "Developed the backend of MyMuzak, Klikt, and OnlineDJ in Ruby on Rails, using MySQL, Sphinx, and Solr for storage and full-text search; BDD/TDD with Cucumber and RSpec."
+      - "Developed a native Android loyalty app (Klikt) in Java using SpringAndroid, Roboguice, Android Annotations, OrmLite, and Jackson."
+      - "Used DevOps tools including Jenkins (CI), Capistrano (deployments), and Chef (provisioning)."
+      - "Integrated applications with Facebook, Twitter, Mailchimp, AppFigures, and Google Maps."
+
+  - position: "Software Engineer"
+    company: "Public Consulting Group"
+    startDate: "2008-03-15"
+    endDate: "2011-05-15"
+    technologies:
+      - "Perl"
+      - "JavaScript"
+      - "jQuery"
+      - "HTML"
+      - "SQL"
+      - "CSS"
+    highlights:
+      - "Lead developer on BehaviorPlus, a web app for tracking behavior issues in grade school students, integrated with EasyIEP (an existing special-education compliance system)."
+
+  - position: "Business Systems Analyst"
+    company: "SNL Financial"
+    startDate: "2007-04-16"
+    endDate: "2008-03-10"
+    highlights:
+      - "Maintained and acted as content expert for Institutional Ownership, Insider Trading, and Short Interest datasets."
+      - "Drafted technical specifications to automate credit-ratings collection from S&P, Moody's, and Fitch (replacing manual entry)."
+      - "Derived dataset statistics for senior management and sales teams using SQL and a proprietary Excel plug-in (SNLxl)."
+
+  - position: "IGERT Fellow"
+    company: "National Science Foundation"
+    startDate: "2004-06-01"
+    endDate: "2006-06-01"
+    highlights:
+      - "Led and assisted in research projects examining the economic aspects of the emerging wireless technology cognitive radio."
+      - "Conducted regression analysis on economics-experiment data in STATA; results included in journal publications."
+
+  - position: "Programmer / Lab Assistant"
+    company: "Economics Dept., Virginia Tech"
+    startDate: "2002-05-15"
+    endDate: "2006-06-01"
+    highlights:
+      - "Developed, analyzed, and refined a system using Palm Pilots as clients and a central server to simulate market scenarios in economics classes."
+      - "Programming in C# and data collection/analysis."
+
+  - position: "Research Assistant"
+    company: "Virginia Tech Transportation Institute"
+    startDate: "2001-05-15"
+    endDate: "2003-08-15"
+    highlights:
+      - "Extracted and analyzed relevant data from transportation-focused human-factors studies using Excel, VB.NET, and SQL Server."
+
+education:
+  - institution: "Virginia Tech"
+    area: "Economics"
+    studyType: "Masters - NSF IGERT Fellow"
+    startDate: "2004-05-15"
+    endDate: "2006-05-15"
+    gpa: "3.5"
+  - institution: "Virginia Tech"
+    area: "Economics & Business Information Technology"
+    studyType: "Bachelors"
+    startDate: "2000-08-15"
+    endDate: "2004-05-15"
+    gpa: "3.7"
+
+awards:
+  - title: "Outstanding Senior in Economics - Class of 2004"
+    date: "2004-05-15"
+    awarder: "Virginia Tech Economics Dept."
+
+interests:
+  - name: "Cloud Services"
+  - name: "Emerging technologies"
+  - name: "Data Analysis and Machine Learning"
+  - name: "Design Patterns"
+  - name: "Service Oriented Architecture"
+  - name: "Financial Services and Investing"

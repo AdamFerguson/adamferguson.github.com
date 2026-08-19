@@ -1,8 +1,27 @@
-_site/*
+# Dependencies
+node_modules/
 
-Thumbs.db
+# Build output
+dist/
+.astro/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
 .DS_Store
+Thumbs.db
 
-!.gitkeep
+# Generated resume artifacts (the PDF/DOCX are produced in CI from /resume/;
+# keep them out of git so they're always fresh from the source of truth).
+public/AdamFerguson-Resume.pdf
+public/AdamFerguson-Resume.docx
 
-.rbenv-version
+# Local scratch
+docs/local-preview-notes.md

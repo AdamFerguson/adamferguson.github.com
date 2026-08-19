@@ -1,30 +1,133 @@
-# Jekyll-Bootstrap
+# adamferguson.github.com
 
-The quickest way to start and publish your Jekyll powered blog. 100% compatible with GitHub pages
+Personal site for **Adam Ferguson** — home page, a data-driven résumé, and a
+Markdown blog. Built with [Astro](https://astro.build) and deployed to GitHub
+Pages.
 
-## Usage
+## Quick start
 
-For all usage and documentation please see: <http://jekyllbootstrap.com>
+```bash
+npm install
+npm run dev          # start the dev server (http://localhost:4321)
+npm run build        # production build → dist/
+npm run preview      # serve the production build locally
+```
 
-## Version
+## What's where
 
-0.1.0 - stable and versioned using [semantic versioning](http://semver.org/).
+| Path                     | Purpose                                              |
+| ------------------------ | ---------------------------------------------------- |
+| `src/data/resume.yaml`   | **Résumé source of truth** (JSON Resume schema, YAML) |
+| `src/data/site.mjs`      | Site metadata, navigation, social links              |
+| `src/content/blog/`      | Blog posts (one Markdown file each)                  |
+| `src/layouts/Base.astro` | Global layout (header, footer, theme, styles)        |
+| `src/pages/`             | Routes: `/`, `/resume/`, `/blog/`, `/about/`, etc.   |
+| `src/styles/`            | Design tokens (`themes.css`) + global + print CSS    |
+| `public/`                | Static assets: favicon, images, generated résumé PDF |
+| `scripts/`               | Build/pipeline helpers (see below)                   |
+| `.github/workflows/`     | GitHub Actions: build + deploy to Pages              |
 
-## Contributing 
+## The résumé
 
-This repository tracks 2 projects:
+The résumé is a **single YAML file** (`src/data/resume.yaml`) validated against
+the [JSON Resume schema](https://jsonresume.org). It drives:
 
-- **Jekyll-Bootstrap Framework.**  
-  The framework for which users should clone and build their blog on top of is available in the master branch.
-  Please fork and contribute additions to the framework itself here.
- 
-- **Jekyll-Bootstrap Documentation Website.**    
-  The documentation website at <http://jekyllbootstrap.com> is maintained in the gh-pages branch.
-  Please fork and contribute documentation additions to this branch only.
+- the `/resume/` page,
+- the home-page "Current focus" summary,
+- the Person JSON-LD structured data,
+- the generated PDF (`public/AdamFerguson-Resume.pdf`), and
+- (optionally) a Word document.
 
-The master and gh-pages branch do not share the same ancestry. Please treat them as completely separate git repositories!
+### Update the résumé
 
+1. Edit `src/data/resume.yaml` (keep it valid JSON Resume data — see
+   [schema](https://github.com/jsonresume/resume-schema)).
+2. Validate: `npm run validate:resume`
+3. Rebuild the PDF: `npm run pdf`
+4. Commit. CI validates the YAML and regenerates the PDF on every deploy.
 
-## License
+> The PDF is **not** committed to git — it's generated in CI from the
+> `/resume/` page so it always matches the web view (WYSIWYG).
 
-[Creative Commons](http://creativecommons.org/licenses/by-nc-sa/3.0/)
+### Regenerate the PDF locally
+
+```bash
+npm run build        # (or rely on an existing dist/)
+npm run pdf          # builds if needed, then renders via Playwright
+```
+
+Requires Playwright's Chromium: `npx playwright install chromium`.
+
+## The blog
+
+Posts are plain Markdown files in `src/content/blog/`. The **filename is the
+URL slug** (e.g. `my-post.md` → `/blog/my-post/`).
+
+Front matter:
+
+```yaml
+---
+title: "My post"
+description: "A one-line summary shown on index + home."
+date: 2026-08-19
+tags: [astro, meta]
+category: Engineering   # optional
+draft: false            # omit to keep the post published
+---
+```
+
+- **New post:** add a file to `src/content/blog/`, commit, push.
+- **Tags / categories:** derived from front matter; indexed at `/tags/` and
+  `/categories/`.
+- **RSS:** `/feed.xml` (the old `/atom.xml` redirects here).
+- **Drafts:** set `draft: true` to exclude from the site and feed.
+
+## Theming
+
+Design tokens live in `src/styles/`:
+
+- `themes.css` — Tier-1 *reference* tokens. Each theme (`ferra`, `slate`,
+  `ink`) is a set of `--t-*` values, selected via `<html data-theme="...">`.
+- Dark/light is an **orthogonal** axis (`data-mode`), not a theme.
+- `global.css` — maps reference → semantic → component tokens + layout.
+- `print.css` — `@media print` rules used for the résumé PDF.
+
+### Trying themes (dev only)
+
+A small floating theme switcher appears in the dev server (`npm run dev`)
+bottom-right. It writes your choice to `localStorage`
+(`af-theme`, `af-mode`) and is **disabled in production builds**. To preview a
+specific theme, set the `data-theme` / `data-mode` attributes in
+`src/layouts/Base.astro` (the `theme` / `mode` consts), or use the dev toggle.
+
+## Deployment
+
+Deploys to **GitHub Pages** via GitHub Actions (`.github/workflows/deploy.yml`):
+
+- Validates the résumé YAML.
+- Builds the site.
+- Renders the résumé PDF with Playwright.
+- Uploads `dist/` as the Pages artifact and deploys on `master`/`main`.
+
+**Required repo settings** (one-time, in the GitHub UI):
+1. *Settings → Pages → Build and deployment → Source:* **GitHub Actions**.
+2. *Settings → Pages → Custom domain:* `adam-ferguson.com`, with **Enforce
+   HTTPS** on. (Point the DNS CNAME at `adamferguson.github.com`.)
+
+The primary domain is `adam-ferguson.com`; `adamferguson.github.com` is an
+automatic alias.
+
+## Legacy URL redirects
+
+Old Jekyll URLs are preserved via client-side redirect pages generated in
+`public/` by `scripts/make-redirects.mjs` (e.g. `/about.html` → `/about/`,
+`/atom.xml` → `/feed.xml`, legacy posts → `/blog/`). Re-run it after adding
+redirects: `node scripts/make-redirects.mjs`.
+
+## Project layout notes
+
+- No analytics (by design, for now).
+- Zero runtime JS on content pages; the only scripts are a tiny pre-paint
+  theme hydrator and the dev-only theme toggle.
+- `docs/plan.md` and `docs/planning-prompts.md` hold the approved plan and the
+  original planning prompts/research.

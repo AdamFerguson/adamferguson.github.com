@@ -1,0 +1,35 @@
+---
+// Branded 404 page.
+import Base from "../layouts/Base.astro";
+import { url } from "../utils/url.mjs";
+import { site } from "../data/site.mjs";
+---
+
+<Base title="Not found">
+  <section class="notfound">
+    <p class="hero__eyebrow muted">404</p>
+    <h1 class="display">Page not found</h1>
+    <p class="lead">
+      The page you're looking for doesn't exist or has moved.
+    </p>
+    <div class="notfound__actions">
+      <a class="btn" href={url("/")}>Go home</a>
+      <a class="btn btn--ghost" href={url("/blog/")}>Browse the blog</a>
+      <a class="btn btn--ghost" href={url("/resume/")}>View résumé</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound {
+    padding-block: 3rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+</style>

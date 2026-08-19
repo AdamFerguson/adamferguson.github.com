@@ -1,0 +1,136 @@
+---
+// Resume: full rendering of src/data/resume.yaml. Print-friendly; the
+// generated PDF (public/AdamFerguson-Resume.pdf) is produced from this page
+// by scripts/render-pdf.mjs in CI (Playwright page.pdf with print CSS).
+import Base from "../../layouts/Base.astro";
+import { loadResume } from "../../data/resume.mjs";
+
+const resume = loadResume();
+const { basics, work = [], skills = [], education = [], awards = [] } = resume;
+
+// Format an ISO date as "Jul 2020".
+function fmt(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+function range(start, end) {
+  const s = fmt(start);
+  const e = end ? fmt(end) : "Present";
+  return s ? `${s} — ${e}` : e;
+}
+---
+
+<Base title="Résumé">
+  <article class="resume" aria-label="Résumé">
+    <header class="resume__header">
+      <div>
+        <h1 class="resume__name">{basics.name}</h1>
+        <p class="resume__label">{basics.label}</p>
+      </div>
+      <address class="resume__contact">
+        <a href={`mailto:${basics.email}`}>{basics.email}</a>
+        {basics.location?.city && (
+          <span>
+            {basics.location.city}
+            {basics.location?.region ? `, ${basics.location.region}` : ""}
+          </span>
+        )}
+        {basics.profiles?.map((p) => (
+          <a href={p.url}>{p.network}</a>
+        ))}
+      </address>
+    </header>
+
+    <section>
+      <h2>Profile</h2>
+      <p class="resume__summary">{basics.summary}</p>
+    </section>
+
+    {skills.length > 0 && (
+      <section>
+        <h2>Skills</h2>
+        <dl class="skills-list">
+          {skills.map((g) => (
+            <>
+              <dt>{g.name}</dt>
+              <dd>{g.keywords.join(", ")}</dd>
+            </>
+          ))}
+        </dl>
+      </section>
+    )}
+
+    <section>
+      <h2>Experience</h2>
+      {work.map((job) => (
+        <div class="resume__item">
+          <div class="resume__item-head">
+            <div>
+              <span class="resume__position">{job.position}</span>
+              <span class="resume__company">
+                {" · "}
+                {job.website ? (
+                  <a href={job.website} rel="noopener">{job.company}</a>
+                ) : (
+                  <span>{job.company}</span>
+                )}
+              </span>
+            </div>
+            <span class="resume__dates">{range(job.startDate, job.endDate)}</span>
+          </div>
+          {job.summary && <p class="muted">{job.summary}</p>}
+          {(job.technologies ?? []).length > 0 && (
+            <div class="resume__tech">
+              {job.technologies.map((t) => <span>{t}</span>)}
+            </div>
+          )}
+          {(job.highlights ?? []).length > 0 && (
+            <ul class="resume__highlights">
+              {job.highlights.map((h) => (
+                <li>{h}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
+    </section>
+
+    {education.length > 0 && (
+      <section>
+        <h2>Education</h2>
+        {education.map((ed) => (
+          <div class="resume__item">
+            <div class="resume__item-head">
+              <div>
+                <span class="resume__position">{ed.area}</span>
+                <span class="resume__company">
+                  {" · "}
+                  {ed.studyType ? `${ed.institution} — ${ed.studyType}` : ed.institution}
+                </span>
+              </div>
+              <span class="resume__dates">{range(ed.startDate, ed.endDate)}</span>
+            </div>
+          </div>
+        ))}
+      </section>
+    )}
+
+    {awards.length > 0 && (
+      <section>
+        <h2>Awards</h2>
+        <ul class="resume__highlights">
+          {awards.map((a) => (
+            <li>
+              {a.title}
+              {a.awarder ? ` — ${a.awarder}` : ""}
+              {a.date ? <span class="muted"> ({fmt(a.date)})</span> : ""}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</Base>

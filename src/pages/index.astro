@@ -1,0 +1,95 @@
+---
+// Home: intro, current-role summary (from resume YAML), resume CTA, recent posts.
+import Base from "../layouts/Base.astro";
+import { url, slugOf } from "../utils/url.mjs";
+import { site } from "../data/site.mjs";
+import { loadResume, currentRole } from "../data/resume.mjs";
+import { getCollection } from "astro:content";
+
+const resume = loadResume();
+const basics = resume.basics;
+const role = currentRole(resume);
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+).slice(0, 5);
+const skills = resume.skills ?? [];
+const topSkills = skills.slice(0, 4).flatMap((g) => g.keywords.slice(0, 5));
+---
+
+<Base>
+  <section class="hero">
+    <p class="hero__eyebrow muted">
+      {basics.location?.region || "Charlotte, NC"} · {basics.label}
+    </p>
+    <h1 class="display">{basics.name}</h1>
+    <p class="lead">{basics.summary}</p>
+    <div class="hero__actions">
+      <a class="btn" href={url("/resume/")}>View résumé</a>
+      <a class="btn btn--ghost" href={url("/AdamFerguson-Resume.pdf")}>
+        Download PDF
+      </a>
+      <a class="btn btn--ghost" href={url("/blog/")}>Read the blog</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section__title">Current focus</h2>
+    <div class="card">
+      <p class="resume__position">{role.position}</p>
+      <p class="muted">{role.company}</p>
+      <p class="muted">{role.summary}</p>
+      <div class="resume__tech">
+        {(role.technologies ?? []).slice(0, 12).map((t) => <span>{t}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section__title">What I work with</h2>
+    <div class="resume__tech">
+      {topSkills.map((t) => <span>{t}</span>)}
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="section">
+      <h2 class="section__title">Recent writing</h2>
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li class="card">
+            <h3 class="post-title">
+              <a href={url(`/blog/${slugOf(post.id)}/`)}>{post.data.title}</a>
+            </h3>
+            <time
+              datetime={post.data.date.toISOString()}
+             >{post.data.date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}</time>
+            <p class="muted">{post.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Base>
+
+<style>
+  .hero {
+    padding-block: 1rem 2rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+</style>

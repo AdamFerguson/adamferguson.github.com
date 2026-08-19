@@ -1,0 +1,53 @@
+---
+// /tags/{tag}/ — all posts for a single tag.
+import Base from "../../layouts/Base.astro";
+import { url, slugOf } from "../../utils/url.mjs";
+import { getCollection } from "astro:content";
+
+// One static path per tag that has at least one post.
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  const tags = new Set();
+  for (const p of posts) for (const t of p.data.tags ?? []) tags.add(t);
+  return [...tags].map((tag) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+const decoded = decodeURIComponent(tag);
+const posts = (await getCollection("blog"))
+  .filter((p) => (p.data.tags ?? []).some((t) => t.toLowerCase() === decoded.toLowerCase()))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function fmt(d) {
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+---
+
+<Base title={`Tag: ${decoded}`}>
+  <section class="section">
+    <h1 class="display">#{decoded}</h1>
+    <p class="lead">Posts tagged <strong>{decoded}</strong>.</p>
+  </section>
+
+  {posts.length === 0 ? (
+    <p class="muted">No posts found for this tag.</p>
+  ) : (
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li class="card">
+          <h2 class="post-title">
+            <a href={url(`/blog/${slugOf(post.id)}/`)}>{post.data.title}</a>
+          </h2>
+          <p class="post__meta">
+            <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+          </p>
+          <p class="muted">{post.data.description}</p>
+        </li>
+      ))}
+    </ul>
+  )}
+</Base>

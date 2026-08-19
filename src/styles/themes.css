@@ -1,0 +1,92 @@
+/* =========================================================================
+   Theme token sets — Adam Ferguson personal site
+   ---------------------------------------------------------------------------
+   Each theme defines Tier-1 REFERENCE tokens (--t-*). The semantic tokens in
+   global.css map to them. Themes are chosen via <html data-theme="...">.
+   Dark/light is an ORTHOGONAL axis (data-mode) and is layered on top.
+
+   Candidates (presented to the owner in WS3 for a final pick):
+     - ferra  : warm, editorial — the default "engineer's desk" feel
+     - slate  : cool, corporate-technical
+     - ink    : minimal, mono-accented, high-contrast
+   ========================================================================= */
+
+/* ------------------------------------------------------------- ferra (default) */
+:root,
+[data-theme="ferra"] {
+  --t-accent: #d96524;      /* burnt orange */
+  --t-on-accent: #ffffff;
+  --t-bg: #f7f4ef;          /* warm paper */
+  --t-surface: #fffdf9;
+  --t-surface-alt: #efe9e0;
+  --t-text: #2a2622;        /* near-black warm */
+  --t-text-muted: #6d645a;
+  --t-border: #ddd5c9;
+
+  --font-display: "Sora", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --measure: 72ch;
+}
+
+/* ------------------------------------------------------------- slate */
+[data-theme="slate"] {
+  --t-accent: #0f766e;      /* teal */
+  --t-on-accent: #ffffff;
+  --t-bg: #f4f7f8;          /* cool paper */
+  --t-surface: #ffffff;
+  --t-surface-alt: #e8edf0;
+  --t-text: #1c2428;
+  --t-text-muted: #5b6a70;
+  --t-border: #d3dce0;
+}
+
+/* ------------------------------------------------------------- ink */
+[data-theme="ink"] {
+  --t-accent: #2a2a2a;      /* near-black accent, mono-driven */
+  --t-on-accent: #ffffff;
+  --t-bg: #fbfbf9;
+  --t-surface: #ffffff;
+  --t-surface-alt: #f0f0ee;
+  --t-text: #141414;
+  --t-text-muted: #5a5a5a;
+  --t-border: #e2e2e0;
+}
+
+/* ============================ dark mode (orthogonal axis) ================= */
+/* Dark overrides the *meaning* of surfaces, not the accent. The accent is
+   slightly lightened for contrast on dark backgrounds. */
+[data-mode="dark"],
+:root[data-mode="dark"] {
+  --t-bg: #15140f;
+  --t-surface: #1e1c16;
+  --t-surface-alt: #2a271f;
+  --t-text: #ece6dc;
+  --t-text-muted: #a39a8c;
+  --t-border: #3a352b;
+  --t-accent: #f0824a;
+  --t-on-accent: #1a1610;
+}
+[data-theme="slate"][data-mode="dark"],
+[data-theme="slate"][data-mode="dark"] {
+  --t-bg: #0f1416;
+  --t-surface: #162024;
+  --t-surface-alt: #223036;
+  --t-text: #dbe4e8;
+  --t-text-muted: #8aa0a8;
+  --t-border: #2c3c44;
+  --t-accent: #2dd4bf;
+  --t-on-accent: #06201d;
+}
+[data-theme="ink"][data-mode="dark"],
+[data-theme="ink"][data-mode="dark"] {
+  --t-bg: #101010;
+  --t-surface: #1a1a1a;
+  --t-surface-alt: #262626;
+  --t-text: #f2f2f0;
+  --t-text-muted: #a8a8a8;
+  --t-border: #343434;
+  --t-accent: #f2f2f0;
+  --t-on-accent: #141414;
+}

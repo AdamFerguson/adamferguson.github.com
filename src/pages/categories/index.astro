@@ -1,0 +1,53 @@
+---
+// /categories/ — index of all categories.
+import Base from "../../layouts/Base.astro";
+import { url } from "../../utils/url.mjs";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+const catMap = new Map();
+for (const p of posts) {
+  const c = p.data.category;
+  if (c) catMap.set(c, (catMap.get(c) ?? 0) + 1);
+}
+const cats = [...catMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+---
+
+<Base title="Categories">
+  <section class="section">
+    <h1 class="display">Categories</h1>
+    {cats.length === 0 ? (
+      <p class="muted">No categories yet.</p>
+    ) : (
+      <div class="tag-cloud">
+        {cats.map(([cat, count]) => (
+          <a
+            class="tag tag--link"
+            href={url(`/categories/${encodeURIComponent(cat)}/`)}
+          >
+            {cat}
+            <span class="tag__count">{count}</span>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</Base>
+
+<style>
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .tag--link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text);
+  }
+  .tag__count {
+    opacity: 0.6;
+    font-size: 0.75rem;
+  }
+</style>
