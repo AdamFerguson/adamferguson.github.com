@@ -46,6 +46,11 @@ jobs:
           npx playwright install --with-deps chromium
           npm run pdf
 
+      - name: Copy PDF into build output
+        # The PDF is rendered into public/ after the build ran; copy it into
+        # dist/ so it's part of the Pages artifact (served at /AdamFerguson-Resume.pdf).
+        run: cp public/AdamFerguson-Resume.pdf dist/AdamFerguson-Resume.pdf
+
       - name: Verify dist output
         run: |
           test -f dist/index.html
