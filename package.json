@@ -17,6 +17,7 @@
     "pdf": "node scripts/render-pdf.mjs",
     "docx": "node scripts/render-docx.mjs",
     "redirects": "node scripts/make-redirects.mjs",
+    "resume:set": "node scripts/use-resume.mjs",
     "check": "npm run validate:resume && npm run build"
   },
   "dependencies": {

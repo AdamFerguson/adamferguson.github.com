@@ -1,19 +1,25 @@
-# Adam Ferguson — résumé · BALANCED variant
+# Adam Ferguson — résumé · FOCUSED variant (recommended default)
 #
-# A middle ground between the original (12 detailed roles, 6 skill groups)
-# and the Focused variant. Keeps four recent roles in detail, trims every
-# highlight, keeps five skill groups plus the award, and still drops the
-# pre-2011 academic / analyst / fellowship roles.
+# Simplified for a senior / ML-oriented reader:
+#   - 2-sentence profile instead of a paragraph
+#   - Skills consolidated from 6 groups to 4, each kept tight and current
+#   - The three most recent, most relevant roles are detailed
+#   - Earlier roles are one-line entries (trajectory kept, fluff removed)
+#   - Pre-2011 academic / analyst / fellowship roles dropped
+#   - Per-role tech-tag lists dropped (skills section + highlights carry it)
+#
+# This file is the active résumé. See ../resume-variants/README.md for the
+# other variants and how to switch.
 
 basics:
   name: "Adam Ferguson"
   label: "Senior Software Engineer"
   email: "Adam.Brugh.Ferguson@gmail.com"
   summary: >
-    Senior software engineer with 15+ years in full-stack web development,
-    cloud/DevOps, and machine learning. Comfortable owning systems end to end
-    — architecture, deployment pipelines, ML model services, and the web apps
-    that use them — with a bias toward simple, reliable solutions.
+    Senior software engineer with 15+ years across full-stack web,
+    cloud/DevOps, and machine learning. I build reliable, end-to-end systems —
+    from Kubernetes platforms and CI/CD pipelines to ML model services and the
+    web apps that use them.
   website: "https://adam-ferguson.com"
   location:
     city: "Charlotte"
@@ -32,7 +38,6 @@ skills:
       - "Go"
       - "Python"
       - "TypeScript / JavaScript"
-      - "Ruby"
       - "SQL"
   - name: "Cloud & DevOps"
     keywords:
@@ -42,29 +47,24 @@ skills:
       - "Helm"
       - "Terraform"
       - "Docker"
-      - "CI/CD (GitHub Actions, Jenkins)"
+      - "CI/CD (GitHub Actions)"
   - name: "Backend & APIs"
     keywords:
       - "Node.js / Express"
-      - "Ruby on Rails"
       - "FastAPI"
       - "GraphQL"
       - "REST"
       - "PostgreSQL"
-  - name: "Frontend"
+  - name: "Frontend & Data"
     keywords:
-      - "React / Redux"
-      - "TypeScript"
-      - "HTML / CSS"
-  - name: "Data & ML"
-    keywords:
+      - "React"
       - "Pandas"
       - "scikit-learn"
       - "XGBoost"
-      - "PostgreSQL / Redshift"
       - "Data pipelines"
 
 work:
+  # ── Recent roles (detailed) ─────────────────────────────────────────
   - position: "Senior Software Engineer"
     company: "Delta Bravo"
     website: "https://deltabravo.ai"
@@ -84,7 +84,6 @@ work:
     highlights:
       - "Built CI/CD for multiple AI services — Terraform for AWS, Helm for OpenShift, Jenkins."
       - "Led adoption of Rasa as the core of Ally's chatbot platform."
-      - "Developed and tested AWS Lambda functions for the existing Lex-based bot."
 
   - position: "Senior Software Engineer"
     company: "InVue Security Inc."
@@ -94,20 +93,14 @@ work:
     summary: "Hardware- and software-based retail security solutions."
     highlights:
       - "Led 'Access Manager': React + Node.js/Express/PostgreSQL, a Java app server, and a native Android setup app; provisioned to GCP."
-      - "Led 'Insight', a compliance reporting app: React/Redux + Node.js, with serverless device comms."
-      - "Owned features, performance work, and sysadmin for 'Microsigns' (Node/PostgreSQL, AngularJS)."
+      - "Led 'Insight', a compliance reporting app: React/Redux + Node.js, with serverless device comms (Lambda, API Gateway, DynamoDB)."
 
+  # ── Earlier roles (one line each) ───────────────────────────────────
   - position: "Data Engineer / App Dev Consultant"
     company: "Ferguson Software Services (Mood Media)"
     startDate: "2015-01-10"
     endDate: "2017-03-31"
-    summary: "Systems integration, ETL, and web application development."
-    highlights:
-      - "Integrated multiple internal systems via ETL (Python, SQLAlchemy)."
-      - "Migrated a data-warehouse solution from MongoDB to Redshift."
-      - "Built and maintained several Ruby on Rails apps with React/Backbone frontends."
 
-  # ── Earlier roles (one line each) ───────────────────────────────────
   - position: "Web Development Consultant"
     company: "Ally Financial (OpenSystems)"
     startDate: "2014-08-15"
@@ -134,8 +127,3 @@ education:
     studyType: "Bachelors"
     startDate: "2000-08-15"
     endDate: "2004-05-15"
-
-awards:
-  - title: "Outstanding Senior in Economics - Class of 2004"
-    date: "2004-05-15"
-    awarder: "Virginia Tech Economics Dept."
