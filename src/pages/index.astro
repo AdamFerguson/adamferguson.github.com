@@ -19,7 +19,8 @@ const topSkills = skills.slice(0, 4).flatMap((g) => g.keywords.slice(0, 5));
 <Base>
   <section class="hero">
     <p class="hero__eyebrow muted">
-      {basics.location?.region || "Charlotte, NC"} · {basics.label}
+      {[basics.location?.city, basics.location?.region].filter(Boolean).join(", ") ||
+        "Harrisburg, PA"} · {basics.label}
     </p>
     <h1 class="display">{basics.name}</h1>
     <p class="lead">{basics.summary}</p>

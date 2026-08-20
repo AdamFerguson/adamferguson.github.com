@@ -1,11 +1,15 @@
 ---
 import { site, nav } from "../data/site.mjs";
 import { url } from "../utils/url.mjs";
+import { defaultTheme, defaultMode } from "../data/themes.mjs";
 import PersonJsonLd from "../components/PersonJsonLd.astro";
 const { title, description } = Astro.props;
 const pageTitle = title ? `${title} · ${site.name}` : site.title;
-const theme = "ferra";
-const mode = "auto";
+const theme = defaultTheme;
+const mode = defaultMode;
+// The dev-only theme switcher is included only in DEV builds, so it is
+// tree-shaken out of production output and never ships to visitors.
+const isDev = import.meta.env.DEV;
 ---
 <!doctype html>
 <html lang="en" data-theme={theme} data-mode={mode}>
@@ -27,7 +31,12 @@ const mode = "auto";
         } catch (e) {}
       })();
     </script>
-    <style>
+    <!-- is:global: these sheets define Tier-1/2 tokens and element-level
+         rules that must apply to ALL page content, not just Base's own
+         markup. Without it, Astro scopes every selector to this layout's
+         scope id and page content (links, headings, lists, code) renders
+         with UA defaults. -->
+    <style is:global>
       @import "../styles/themes.css";
       @import "../styles/global.css";
       @import "../styles/print.css";
@@ -45,7 +54,7 @@ const mode = "auto";
           <ul>
             {nav.map((item) => (
               <li>
-                <a href={`url(item.href)`}>{item.label}</a>
+                <a href={url(item.href)}>{item.label}</a>
               </li>
             ))}
           </ul>
@@ -58,5 +67,11 @@ const mode = "auto";
         <p>© {new Date().getFullYear()} {site.name}. Built with Astro.</p>
       </div>
     </footer>
+    {isDev && (
+      <script type="module">
+        import { initThemeToggle } from "../scripts/theme-toggle.js";
+        initThemeToggle();
+      </script>
+    )}
   </body>
 </html>

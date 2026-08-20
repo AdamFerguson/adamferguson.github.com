@@ -14,7 +14,7 @@
 /* ------------------------------------------------------------- ferra (default) */
 :root,
 [data-theme="ferra"] {
-  --t-accent: #d96524;      /* burnt orange */
+  --t-accent: #b84e17;      /* burnt orange (darkened for 4.5:1 with --t-on-accent) */
   --t-on-accent: #ffffff;
   --t-bg: #f7f4ef;          /* warm paper */
   --t-surface: #fffdf9;
@@ -23,9 +23,9 @@
   --t-text-muted: #6d645a;
   --t-border: #ddd5c9;
 
-  --font-display: "Sora", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --t-font-display: "Sora", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --t-font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --t-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --measure: 72ch;
 }
@@ -40,6 +40,11 @@
   --t-text: #1c2428;
   --t-text-muted: #5b6a70;
   --t-border: #d3dce0;
+
+  /* cool, corporate-technical: clean system sans; no webfonts */
+  --t-font-display: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --t-font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --t-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 /* ------------------------------------------------------------- ink */
@@ -52,6 +57,11 @@
   --t-text: #141414;
   --t-text-muted: #5a5a5a;
   --t-border: #e2e2e0;
+
+  /* minimal, mono-accented: mono display, clean system sans body */
+  --t-font-display: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --t-font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --t-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 /* ============================ dark mode (orthogonal axis) ================= */

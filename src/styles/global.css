@@ -24,9 +24,11 @@
   --border: var(--t-border);
   --accent: var(--t-accent);
   --on-accent: var(--t-on-accent);
-  --font-display: var(--font-display, var(--t-font-display));
-  --font-body: var(--t-font-body, var(--font-body));
-  --font-mono: var(--t-font-mono, var(--font-mono));
+  /* Non-self-referential fallbacks: themes.css defines --t-font-* for every
+     theme, so these fallbacks only matter if a future theme omits them. */
+  --font-display: var(--t-font-display, system-ui, sans-serif);
+  --font-body: var(--t-font-body, system-ui, sans-serif);
+  --font-mono: var(--t-font-mono, ui-monospace, monospace);
   --measure: var(--t-measure, 72ch);
 }
 

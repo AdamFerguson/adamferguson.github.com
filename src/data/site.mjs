@@ -5,7 +5,7 @@ export const site = {
   name: "Adam Ferguson",
   title: "Adam Ferguson — Software & Infrastructure Engineer",
   description:
-    "Software and infrastructure engineer in Charlotte, NC. Full-stack web, " +
+    "Software and infrastructure engineer in Harrisburg, PA. Full-stack web, " +
     "cloud, DevOps, and data — with a focus on simple, reliable systems.",
   // Primary custom domain. The GitHub Pages host (adamferguson.github.com)
   // is an automatic alias and is not listed here as canonical.
@@ -13,11 +13,11 @@ export const site = {
   // Fallback host, useful for absolute URLs when no custom domain is set.
   host: "https://adamferguson.github.com",
   author: "Adam Ferguson",
-  location: "Charlotte, NC, USA",
+  location: "Harrisburg, PA, USA",
   // Identity / socials (kept in sync with the resume YAML profiles).
+  // LinkedIn is intentionally absent: the résumé keeps it, the site does not.
   social: {
     github: "https://github.com/AdamFerguson",
-    linkedin: "https://www.linkedin.com/in/adambferg",
     stackoverflow: "https://stackoverflow.com/users/836756/adam",
   },
   email: "Adam.Brugh.Ferguson@gmail.com",
