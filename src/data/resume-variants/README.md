@@ -4,14 +4,21 @@ Simplified versions of the résumé data (`../resume.yaml`), produced on the
 `resume-simplify` branch. The active résumé is always `../resume.yaml`; these
 files are the candidates to swap it with.
 
-To use one, copy it over the active file and rebuild:
+To use one, switch the active file and run the dev server:
+
+```bash
+npm run resume:set -- focused      # or: balanced / concise
+npm run dev                        # → http://localhost:4321/resume/
+```
+
+Equivalent manual copy:
 
 ```bash
 cp src/data/resume-variants/focused.yaml src/data/resume.yaml
 npm run build && npm run preview
 ```
 
-(Or just ask to switch — a one-line copy.)
+Run `npm run resume:set` with no argument to list the variants.
 
 ## The three variants
 
