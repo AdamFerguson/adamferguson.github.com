@@ -1,0 +1,141 @@
+# Adam Ferguson — résumé · BALANCED variant
+#
+# A middle ground between the original (12 detailed roles, 6 skill groups)
+# and the Focused variant. Keeps four recent roles in detail, trims every
+# highlight, keeps five skill groups plus the award, and still drops the
+# pre-2011 academic / analyst / fellowship roles.
+
+basics:
+  name: "Adam Ferguson"
+  label: "Senior Software Engineer"
+  email: "Adam.Brugh.Ferguson@gmail.com"
+  summary: >
+    Senior software engineer with 15+ years in full-stack web development,
+    cloud/DevOps, and machine learning. Comfortable owning systems end to end
+    — architecture, deployment pipelines, ML model services, and the web apps
+    that use them — with a bias toward simple, reliable solutions.
+  website: "https://adam-ferguson.com"
+  location:
+    city: "Harrisburg"
+    region: "PA"
+  profiles:
+    - network: "Github"
+      username: "AdamFerguson"
+      url: "https://github.com/AdamFerguson"
+    - network: "LinkedIn"
+      username: "adambferg"
+      url: "https://www.linkedin.com/in/adambferg"
+
+skills:
+  - name: "Languages"
+    keywords:
+      - "Go"
+      - "Python"
+      - "TypeScript / JavaScript"
+      - "Ruby"
+      - "SQL"
+  - name: "Cloud & DevOps"
+    keywords:
+      - "AWS"
+      - "Google Cloud Platform"
+      - "Kubernetes"
+      - "Helm"
+      - "Terraform"
+      - "Docker"
+      - "CI/CD (GitHub Actions, Jenkins)"
+  - name: "Backend & APIs"
+    keywords:
+      - "Node.js / Express"
+      - "Ruby on Rails"
+      - "FastAPI"
+      - "GraphQL"
+      - "REST"
+      - "PostgreSQL"
+  - name: "Frontend"
+    keywords:
+      - "React / Redux"
+      - "TypeScript"
+      - "HTML / CSS"
+  - name: "Data & ML"
+    keywords:
+      - "Pandas"
+      - "scikit-learn"
+      - "XGBoost"
+      - "PostgreSQL / Redshift"
+      - "Data pipelines"
+
+work:
+  - position: "Senior Software Engineer"
+    company: "Delta Bravo"
+    website: "https://deltabravo.ai"
+    startDate: "2020-07-01"
+    summary: "Startup delivering machine-learning solutions to manufacturing clients."
+    highlights:
+      - "Built ML models (Pandas, scikit-learn, XGBoost) to optimize manufacturing processes."
+      - "Shipped web apps to visualize model predictions (React, FastAPI, Hasura, PostgreSQL)."
+      - "Owned deployment: Helm charts, Terraform modules, and CI/CD on Kubernetes."
+
+  - position: "Senior AI Developer"
+    company: "Ally Financial"
+    website: "https://ally.com"
+    startDate: "2019-08-12"
+    endDate: "2020-06-30"
+    summary: "DevOps and service development for AI features in online banking."
+    highlights:
+      - "Built CI/CD for multiple AI services — Terraform for AWS, Helm for OpenShift, Jenkins."
+      - "Led adoption of Rasa as the core of Ally's chatbot platform."
+      - "Developed and tested AWS Lambda functions for the existing Lex-based bot."
+
+  - position: "Senior Software Engineer"
+    company: "InVue Security Inc."
+    website: "https://invue.com"
+    startDate: "2017-04-10"
+    endDate: "2019-08-09"
+    summary: "Hardware- and software-based retail security solutions."
+    highlights:
+      - "Led 'Access Manager': React + Node.js/Express/PostgreSQL, a Java app server, and a native Android setup app; provisioned to GCP."
+      - "Led 'Insight', a compliance reporting app: React/Redux + Node.js, with serverless device comms."
+      - "Owned features, performance work, and sysadmin for 'Microsigns' (Node/PostgreSQL, AngularJS)."
+
+  - position: "Data Engineer / App Dev Consultant"
+    company: "Ferguson Software Services (Mood Media)"
+    startDate: "2015-01-10"
+    endDate: "2017-03-31"
+    summary: "Systems integration, ETL, and web application development."
+    highlights:
+      - "Integrated multiple internal systems via ETL (Python, SQLAlchemy)."
+      - "Migrated a data-warehouse solution from MongoDB to Redshift."
+      - "Built and maintained several Ruby on Rails apps with React/Backbone frontends."
+
+  # ── Earlier roles (one line each) ───────────────────────────────────
+  - position: "Web Development Consultant"
+    company: "Ally Financial (OpenSystems)"
+    startDate: "2014-08-15"
+    endDate: "2015-01-07"
+
+  - position: "Senior Software Engineer"
+    company: "Technekes / Connexiolabs"
+    startDate: "2013-02-14"
+    endDate: "2014-08-10"
+
+  - position: "Senior Software Developer"
+    company: "Mood Media / Muzak LLC"
+    startDate: "2011-07-05"
+    endDate: "2013-02-07"
+
+education:
+  - institution: "Virginia Tech"
+    area: "Economics"
+    studyType: "Masters - NSF IGERT Fellow"
+    startDate: "2004-05-15"
+    endDate: "2006-05-15"
+  - institution: "Virginia Tech"
+    area: "Economics & Business Information Technology"
+    studyType: "Bachelors"
+    startDate: "2000-08-15"
+    endDate: "2004-05-15"
+
+awards:
+  - title: "Outstanding Senior in Economics - Class of 2004"
+    date: "2004-05-15"
+    awarder: "Virginia Tech Economics Dept."

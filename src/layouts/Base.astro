@@ -1,0 +1,77 @@
+---
+import { site, nav } from "../data/site.mjs";
+import { url } from "../utils/url.mjs";
+import { defaultTheme, defaultMode } from "../data/themes.mjs";
+import PersonJsonLd from "../components/PersonJsonLd.astro";
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} · ${site.name}` : site.title;
+const theme = defaultTheme;
+const mode = defaultMode;
+// The dev-only theme switcher is included only in DEV builds, so it is
+// tree-shaken out of production output and never ships to visitors.
+const isDev = import.meta.env.DEV;
+---
+<!doctype html>
+<html lang="en" data-theme={theme} data-mode={mode}>
+  <head>
+    <meta charset="utf-8" />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      (function () {
+        try {
+          var r = document.documentElement;
+          var t = localStorage.getItem("af-theme");
+          var m =
+            localStorage.getItem("af-mode") ||
+            (matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light");
+          if (t) r.setAttribute("data-theme", t);
+          if (m) r.setAttribute("data-mode", m);
+        } catch (e) {}
+      })();
+    </script>
+    <!-- is:global: these sheets define Tier-1/2 tokens and element-level
+         rules that must apply to ALL page content, not just Base's own
+         markup. Without it, Astro scopes every selector to this layout's
+         scope id and page content (links, headings, lists, code) renders
+         with UA defaults. -->
+    <style is:global>
+      @import "../styles/themes.css";
+      @import "../styles/global.css";
+      @import "../styles/print.css";
+    </style>
+  </head>
+  <body>
+    <PersonJsonLd />
+    <header class="site-header">
+      <div class="wrap site-header__inner">
+        <a class="brand" href={url("/")} aria-label="home">
+          <span class="brand__mark">AF</span>
+          <span class="brand__name">Adam Ferguson</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <ul>
+            {nav.map((item) => (
+              <li>
+                <a href={url(item.href)}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main class="site-main wrap" id="main"><slot /></main>
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <p>© {new Date().getFullYear()} {site.name}. Built with Astro.</p>
+      </div>
+    </footer>
+    {isDev && (
+      <script type="module">
+        import { initThemeToggle } from "../scripts/theme-toggle.js";
+        initThemeToggle();
+      </script>
+    )}
+  </body>
+</html>

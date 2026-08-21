@@ -1,0 +1,48 @@
+---
+// /tags/ — index of all tags, each linking to its tag page.
+import Base from "../../layouts/Base.astro";
+import { url } from "../../utils/url.mjs";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+// Build a tag -> count map.
+const tagMap = new Map();
+for (const p of posts) {
+  for (const t of p.data.tags ?? []) {
+    tagMap.set(t, (tagMap.get(t) ?? 0) + 1);
+  }
+}
+const tags = [...tagMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+---
+
+<Base title="Tags">
+  <section class="section">
+    <h1 class="display">Tags</h1>
+    <div class="tag-cloud">
+      {tags.map(([tag, count]) => (
+        <a class="tag tag--link" href={url(`/tags/${encodeURIComponent(tag)}/`)}>
+          {tag}
+          <span class="tag__count">{count}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .tag--link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text);
+  }
+  .tag__count {
+    opacity: 0.6;
+    font-size: 0.75rem;
+  }
+</style>

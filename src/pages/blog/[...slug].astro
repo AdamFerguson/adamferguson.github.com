@@ -1,0 +1,96 @@
+---
+// Single blog post: renders the Markdown body via the content-layer `render()`
+// helper (Astro 5). Front matter (title/date/description/tags/category)
+// comes from post.data.
+import Base from "../../layouts/Base.astro";
+import { url, slugOf } from "../../utils/url.mjs";
+import { getCollection, render } from "astro:content";
+
+// One static path per published post; the entry id minus extension is the
+// slug, so URLs are predictable: /blog/{slug}/
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts
+    .filter((p) => !p.data.draft)
+    .map((post) => ({ params: { slug: slugOf(post.id) }, props: { post } }));
+}
+
+const post = Astro.props.post;
+const { title, description, date, updated, tags = [], category } = post.data;
+// Compile the entry to get a renderable <Content /> component + headings.
+const { Content } = await render(post);
+
+function fmt(d) {
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+---
+
+<Base title={title} description={description}>
+  <article class="post">
+    <header class="post__head">
+      <h1 class="post-title">{title}</h1>
+      <p class="post__meta">
+        <time datetime={date.toISOString()}>{fmt(date)}</time>
+        {updated && (
+          <>
+            {" · updated "}
+            <time datetime={updated.toISOString()}>{fmt(updated)}</time>
+          </>
+        )}
+        {category && <span> · {category}</span>}
+      </p>
+      {tags.length > 0 && (
+        <div class="post__tags">
+          {tags.map((t) => (
+            <a
+              class="tag"
+              href={url(`/tags/${encodeURIComponent(t)}/`)}
+            >
+              {t}
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="post__body">
+      <Content />
+    </div>
+
+    <footer class="post__footer">
+      <a href={url("/blog/")}>← All posts</a>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .post__head {
+    margin-bottom: 1.5rem;
+  }
+  .post__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+  .post__body {
+    max-width: 46rem;
+  }
+  .post__footer {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .post__body :global(h2) {
+    font-size: 1.4rem;
+    margin-top: 2rem;
+  }
+  .post__body :global(h3) {
+    font-size: 1.15rem;
+    margin-top: 1.5rem;
+  }
+</style>

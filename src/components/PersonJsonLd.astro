@@ -1,0 +1,28 @@
+---
+// Person JSON-LD structured data, kept in sync with site.mjs + resume.
+import { site } from "../data/site.mjs";
+
+// Build the JSON string in the frontmatter so the template expression in the
+// script tag is a simple variable reference (Astro's parser is happy with
+// that; it rejects function calls in element attributes).
+const json = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.author,
+  jobTitle: "Senior Software Engineer",
+  url: site.url,
+  email: `mailto:${site.email}`,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Harrisburg",
+    addressRegion: "PA",
+    addressCountry: "US",
+  },
+  sameAs: [
+    site.social.github,
+    site.social.stackoverflow,
+  ],
+});
+---
+
+<script type="application/ld+json">{json}</script>

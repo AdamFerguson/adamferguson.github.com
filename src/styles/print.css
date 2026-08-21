@@ -1,0 +1,119 @@
+/* =========================================================================
+   Print styles — applied when printing / when the PDF is generated.
+   The generated PDF (public/AdamFerguson-Resume.pdf) is produced by
+   scripts/render-pdf.mjs using Playwright's page.pdf() with these styles,
+   so the PDF matches the on-screen /resume/ page (WYSIWYG).
+   ========================================================================= */
+@media print {
+  :root {
+    /* Force light, high-contrast print palette regardless of theme. */
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-alt: #f3f3f3;
+    --text: #111111;
+    --text-muted: #444444;
+    --border: #cccccc;
+    --accent: #111111;
+    --on-accent: #ffffff;
+  }
+
+  /* Hide chrome: header, footer, nav, theme toggle, skip link, actions. */
+  .site-header,
+  .site-footer,
+  .site-nav,
+  .af-theme-toggle,
+  .skip-link,
+  .hero__actions,
+  .btn {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+  .site-main {
+    padding: 0 !important;
+  }
+  .wrap,
+  .resume {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Resume-specific tweaks for print. */
+  .resume__name {
+    font-size: 22pt;
+    margin-bottom: 2px;
+  }
+  .resume__label {
+    font-size: 12pt;
+    color: #444444;
+  }
+  .resume__contact {
+    font-size: 10pt;
+    color: #444444;
+  }
+  .resume h2 {
+    font-size: 11pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #111111;
+    border-bottom: 1pt solid #999999;
+    margin: 14pt 0 6pt;
+    break-after: avoid;
+  }
+  .resume__item {
+    break-inside: avoid;
+    margin-bottom: 10pt;
+  }
+  .resume__item-head {
+    break-inside: avoid;
+  }
+  .resume__position {
+    font-size: 12pt;
+  }
+  .resume__company {
+    font-size: 11pt;
+  }
+  .resume__dates {
+    font-size: 10pt;
+    color: #444444;
+  }
+  .resume__tech span {
+    font-size: 8.5pt;
+    padding: 1px 6px;
+    border: 0.5pt solid #cccccc;
+    color: #444444;
+  }
+  .resume__highlights li {
+    margin-bottom: 3pt;
+  }
+  .skills-list > div {
+    grid-template-columns: 110pt 1fr !important;
+    break-inside: avoid;
+  }
+  .skills-list dt {
+    font-size: 10pt;
+    font-weight: 700;
+  }
+  .skills-list dd {
+    font-size: 10pt;
+  }
+  .resume__summary {
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  a {
+    color: #111111 !important;
+    text-decoration: none !important;
+  }
+  /* Show resume link URLs in print for reference (email, location, etc.
+     are already plain text; only profile links get their URL shown). */
+  .resume__contact a[href^="http"]::after {
+    content: "";
+  }
+}
