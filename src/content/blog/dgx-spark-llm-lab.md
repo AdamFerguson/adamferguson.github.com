@@ -185,7 +185,7 @@ very different sentences.
 ## Run it on your own
 
 If you've got a DGX Spark — or a rack of them, because it scales across nodes the
-same way — the whole thing lives in one repo: [`spark-lab`](YOUR_SPARK_LAB_REPO_URL).
+same way — the whole thing lives in one repo: [`spark-lab`](https://github.com/AdamFerguson/spark-lab).
 Clone it, `spark-lab init`, point `config.yaml` at your model, and `spark-lab apply`.
 
 It's MIT-licensed, and it's just me tidying up a setup I actually use — so expect it
