@@ -7,11 +7,9 @@ export const site = {
   description:
     "Software and infrastructure engineer in Harrisburg, PA. Full-stack web, " +
     "cloud, DevOps, and data — with a focus on simple, reliable systems.",
-  // Primary custom domain. The GitHub Pages host (adamferguson.github.com)
-  // is an automatic alias and is not listed here as canonical.
+  // Primary custom domain. The site is hosted on Cloudflare Pages
+  // (adam-ferguson.pages.dev); this is the canonical URL.
   url: "https://adam-ferguson.com",
-  // Fallback host, useful for absolute URLs when no custom domain is set.
-  host: "https://adamferguson.github.com",
   author: "Adam Ferguson",
   location: "Harrisburg, PA, USA",
   // Identity / socials (kept in sync with the resume YAML profiles).
