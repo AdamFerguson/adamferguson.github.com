@@ -6,7 +6,7 @@ import { getCollection } from "astro:content";
 
 // One static path per tag that has at least one post.
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
   const tags = new Set();
   for (const p of posts) for (const t of p.data.tags ?? []) tags.add(t);
   return [...tags].map((tag) => ({ params: { tag } }));
@@ -15,6 +15,7 @@ export async function getStaticPaths() {
 const { tag } = Astro.params;
 const decoded = decodeURIComponent(tag);
 const posts = (await getCollection("blog"))
+  .filter((p) => !p.data.draft)
   .filter((p) => (p.data.tags ?? []).some((t) => t.toLowerCase() === decoded.toLowerCase()))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 

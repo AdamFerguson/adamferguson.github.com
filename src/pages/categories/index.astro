@@ -4,7 +4,7 @@ import Base from "../../layouts/Base.astro";
 import { url } from "../../utils/url.mjs";
 import { getCollection } from "astro:content";
 
-const posts = await getCollection("blog");
+const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
 const catMap = new Map();
 for (const p of posts) {
   const c = p.data.category;

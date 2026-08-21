@@ -8,7 +8,6 @@ tags:
   - self-hosting
   - gpu
 category: Infrastructure
-draft: true
 ---
 
 For a while I wanted to run a serious model at home — one I could actually point my

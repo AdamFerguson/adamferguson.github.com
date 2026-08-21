@@ -9,7 +9,9 @@ import { getCollection } from "astro:content";
 const resume = loadResume();
 const basics = resume.basics;
 const role = currentRole(resume);
-const posts = (await getCollection("blog")).sort(
+const posts = (await getCollection("blog"))
+  .filter((p) => !p.data.draft)
+  .sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 ).slice(0, 5);
 const skills = resume.skills ?? [];
