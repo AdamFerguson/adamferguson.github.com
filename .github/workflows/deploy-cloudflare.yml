@@ -99,7 +99,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           if ! npx wrangler pages project list | grep -q adam-ferguson; then
-            npx wrangler pages project create adam-ferguson --production-branch master --production-branch master
+            npx wrangler pages project create adam-ferguson --production-branch master
           fi
 
       - name: Deploy to Cloudflare Pages
