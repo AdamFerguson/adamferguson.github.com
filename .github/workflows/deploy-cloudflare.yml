@@ -55,8 +55,11 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           npm run pdf
-          # DOCX is rendered via pandoc, which is preinstalled on the
-          # ubuntu runner (printed here for diagnosing version issues).
+          # DOCX is rendered via pandoc. The ubuntu runner image no longer
+          # ships it, so install the apt package first (printed for diagnosing
+          # version issues).
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc
           pandoc --version
           npm run docx
 
