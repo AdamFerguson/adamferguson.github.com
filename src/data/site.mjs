@@ -20,7 +20,7 @@ export const site = {
     github: "https://github.com/AdamFerguson",
     stackoverflow: "https://stackoverflow.com/users/836756/adam",
   },
-  email: "Adam.Brugh.Ferguson@gmail.com",
+  email: "adam.b.ferguson@pm.me",
   // RSS feed location (stable URL; old /atom.xml redirects here).
   feedPath: "/feed.xml",
 };
