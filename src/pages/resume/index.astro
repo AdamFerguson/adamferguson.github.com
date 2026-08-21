@@ -3,6 +3,7 @@
 // generated PDF (public/AdamFerguson-Resume.pdf) is produced from this page
 // by scripts/render-pdf.mjs in CI (Playwright page.pdf with print CSS).
 import Base from "../../layouts/Base.astro";
+import { url } from "../../utils/url.mjs";
 import { loadResume } from "../../data/resume.mjs";
 
 const resume = loadResume();
@@ -43,6 +44,11 @@ function range(start, end) {
         ))}
       </address>
     </header>
+
+    <div class="resume__downloads">
+      <a class="btn btn--ghost" href={url("/AdamFerguson-Resume.pdf")}>Download PDF</a>
+      <a class="btn btn--ghost" href={url("/AdamFerguson-Resume.docx")}>Download DOCX</a>
+    </div>
 
     <section>
       <h2>Profile</h2>
@@ -134,3 +140,12 @@ function range(start, end) {
     )}
   </article>
 </Base>
+
+<style>
+  .resume__downloads {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+</style>

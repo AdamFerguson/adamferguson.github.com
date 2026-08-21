@@ -51,21 +51,29 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Render resume PDF
+      - name: Render résumé PDF and DOCX
         run: |
           npx playwright install --with-deps chromium
           npm run pdf
+          # DOCX is rendered via pandoc, which is preinstalled on the
+          # ubuntu runner (printed here for diagnosing version issues).
+          pandoc --version
+          npm run docx
 
-      - name: Copy PDF into build output
-        # The PDF is rendered into public/ after the build ran; copy it into
-        # dist/ so it's part of the deploy (served at /AdamFerguson-Resume.pdf).
-        run: cp public/AdamFerguson-Resume.pdf dist/AdamFerguson-Resume.pdf
+      - name: Copy résumé files into build output
+        # Both are rendered into public/ after the build ran; copy them into
+        # dist/ so they're part of the deploy (served at /AdamFerguson-Resume.pdf
+        # and /AdamFerguson-Resume.docx).
+        run: |
+          cp public/AdamFerguson-Resume.pdf dist/AdamFerguson-Resume.pdf
+          cp public/AdamFerguson-Resume.docx dist/AdamFerguson-Resume.docx
 
       - name: Verify dist output
         run: |
           test -f dist/index.html
           test -f dist/resume/index.html
           test -f dist/AdamFerguson-Resume.pdf
+          test -f dist/AdamFerguson-Resume.docx
           echo "dist verified"
 
       - name: Design-system gate (token audit)
