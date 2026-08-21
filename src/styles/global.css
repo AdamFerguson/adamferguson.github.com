@@ -174,6 +174,15 @@ pre code {
 .brand__name {
   font-family: var(--font-display);
 }
+/* Override the global a:hover underline: the brand links to home and
+   includes the AF mark, so an underline runs awkwardly under the icon.
+   A subtle color shift instead (no layout shift, unlike bolding). */
+.brand:hover {
+  text-decoration: none;
+  /* Slight warm tint toward the accent (not full accent) — a subtle
+     shade change, and no layout shift, unlike a font-weight change. */
+  color: color-mix(in srgb, var(--accent) 45%, var(--text));
+}
 .site-header__actions {
   display: flex;
   align-items: center;
