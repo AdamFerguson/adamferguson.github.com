@@ -10,6 +10,9 @@ export function initImageZoom() {
     // Theme-aware scrim: --overlay resolves to the active theme's Tier-1
     // token (see themes.css).
     background: "var(--overlay)",
+    // Default margin is 0 (image fills the viewport edge-to-edge); leave a
+    // small breathing margin all around.
+    margin: 24,
   });
 
   // medium-zoom does no focus management: move focus into the zoomed image

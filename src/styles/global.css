@@ -161,6 +161,16 @@ pre code {
   background: color-mix(in srgb, var(--bg) 85%, transparent);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
+  transition: opacity 0.3s ease, visibility 0.3s;
+}
+/* The sticky header (z-index 50) stacks above medium-zoom's fixed overlay and
+   would cover the top strip of a zoomed figure. medium-zoom toggles
+   .medium-zoom--opened on <body> while a zoom is open, so hide the header
+   for that window: no extra JS, fades in sync with the zoom transition.
+   visibility (not display) keeps the layout height so nothing reflows. */
+body.medium-zoom--opened .site-header {
+  opacity: 0;
+  visibility: hidden;
 }
 .site-header__inner {
   display: flex;
