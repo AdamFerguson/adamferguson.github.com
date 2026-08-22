@@ -139,6 +139,71 @@ jobs:
             "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/adamferguson-github-com" \
             || echo "nothing to clean up"
 
+      - name: "Remove legacy DNS records for the cutover (idempotent)"
+        # Cloudflare refuses to attach a Worker custom domain while externally
+        # managed records (the Pages-era A records) exist at the hostname
+        # (error 100117). This first checks the worker's domain store — once
+        # the cutover has happened it is a no-op on every future deploy —
+        # otherwise captures the apex + www A/AAAA/CNAME records and deletes
+        # them so `wrangler deploy` can attach the custom domains and
+        # Cloudflare provisions its own records. Everything deleted is
+        # printed first, so a failed cutover is rolled back by recreating
+        # those values (or by re-pointing DNS at the still-existing Pages
+        # project).
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python3 - <<'PYEOF' || echo "legacy-record step reported an error — see log above"
+          import json, os, sys, urllib.request, urllib.error
+
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          api = "https://api.cloudflare.com/client/v4"
+          hosts = ("adam-ferguson.com", "www.adam-ferguson.com")
+
+          def call(method, path, body=None):
+              req = urllib.request.Request(
+                  api + path, method=method,
+                  data=json.dumps(body).encode() if body else None,
+                  headers={"Authorization": f"Bearer {token}",
+                           "Content-Type": "application/json"})
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      return {"ok": True, "resp": json.load(r)}
+              except urllib.error.HTTPError as e:
+                  return {"ok": False, "http": e.code, "body": e.read().decode()[:300]}
+
+          # Guard: if the custom domains are already attached to the worker,
+          # this step is a no-op forever after (safe on every future deploy).
+          wd = call("GET", "/accounts/%s/workers/scripts/adam-ferguson/domains/records" % os.environ["CLOUDFLARE_ACCOUNT_ID"])
+          print("worker domain records:", json.dumps(wd)[:500])
+          if wd["ok"] and "adam-ferguson.com" in json.dumps(wd["resp"].get("result", [])):
+              print("custom domain already attached to the worker — nothing to do")
+              sys.exit(0)
+
+          z = call("GET", "/zones?name=adam-ferguson.com")
+          if not z["ok"] or not z["resp"].get("result"):
+              print("NO ZONE ACCESS via this token:", json.dumps(z)[:300])
+              print("Manual step: cf-api.com -> adam-ferguson.com -> DNS -> delete the A records for @ and www, then re-run this workflow.")
+              sys.exit(0)
+          zone = z["resp"]["result"][0]["id"]
+          print("zone:", zone)
+
+          removed = 0
+          for host in hosts:
+              cur = call("GET", f"/zones/{zone}/dns_records?name={host}")
+              if not cur["ok"]:
+                  print("record list failed:", json.dumps(cur)[:300]); continue
+              for rec in cur["resp"].get("result", []):
+                  if rec["type"] in ("A", "AAAA", "CNAME"):
+                      print("LEGACY (capture for rollback):",
+                            json.dumps({k: rec[k] for k in ("type", "name", "content", "proxied", "id")}))
+                      d = call("DELETE", f"/zones/{zone}/dns_records/{rec['id']}")
+                      print("  deleted:", d["ok"], json.dumps(d["resp"].get("success", d.get("body", "")))[:120])
+                      removed += 1
+          print(f"removed {removed} legacy record(s)")
+          PYEOF
+
       - name: Deploy to Cloudflare Workers
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
