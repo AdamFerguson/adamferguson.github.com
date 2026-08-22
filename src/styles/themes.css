@@ -22,6 +22,7 @@
   --t-text: #2a2622;        /* near-black warm */
   --t-text-muted: #6d645a;
   --t-border: #ddd5c9;
+  --t-overlay: color-mix(in srgb, #1a1612 88%, transparent); /* zoom scrim: warm near-black */
 
   --t-font-display: "Sora", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --t-font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -40,6 +41,7 @@
   --t-text: #1c2428;
   --t-text-muted: #5b6a70;
   --t-border: #d3dce0;
+  --t-overlay: color-mix(in srgb, #0d1215 88%, transparent); /* zoom scrim: cool near-black */
 
   /* cool, corporate-technical: clean system sans; no webfonts */
   --t-font-display: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -57,6 +59,7 @@
   --t-text: #141414;
   --t-text-muted: #5a5a5a;
   --t-border: #e2e2e0;
+  --t-overlay: color-mix(in srgb, #0a0a0a 88%, transparent); /* zoom scrim: neutral black */
 
   /* minimal, mono-accented: mono display, clean system sans body */
   --t-font-display: ui-monospace, "SF Mono", Menlo, Consolas, monospace;

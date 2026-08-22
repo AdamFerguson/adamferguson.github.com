@@ -12,6 +12,7 @@ Raw values. A theme is one block of Tier-1 tokens, selected via
   `--t-surface-alt` — recessed/alternate surface
 - `--t-text`, `--t-text-muted` — primary + secondary text
 - `--t-border` — hairlines and dividers
+- `--t-overlay` — modal/zoom scrim (theme-tinted near-black, 88% alpha)
 - `--font-display`, `--font-body`, `--font-mono` — type stacks
 - `--measure` — max line length for prose (current: 72ch)
 
@@ -28,8 +29,8 @@ generic one fails contrast, then run the full screenshot matrix + audit.
 ## Tier 2 — semantic tokens (`src/styles/global.css`)
 
 `:root` maps Tier-1 to meaning: `--bg`, `--surface`, `--surface-alt`,
-`--text`, `--text-muted`, `--border`, `--accent`, `--on-accent`, plus the font
-and measure tokens. Components and component styles use **only** these names.
+`--text`, `--text-muted`, `--border`, `--accent`, `--on-accent`, `--overlay`, plus
+the font and measure tokens. Components and component styles use **only** these names.
 This seam is what lets a theme (or the dark axis) restyle the whole site
 without touching components.
 

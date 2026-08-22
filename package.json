@@ -25,6 +25,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "ajv": "^8.17.1",
     "astro": "^7.2.4",
+    "medium-zoom": "^1.1.0",
     "yaml": "^2.6.0"
   },
   "devDependencies": {

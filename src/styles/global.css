@@ -24,6 +24,7 @@
   --border: var(--t-border);
   --accent: var(--t-accent);
   --on-accent: var(--t-on-accent);
+  --overlay: var(--t-overlay);
   /* Non-self-referential fallbacks: themes.css defines --t-font-* for every
      theme, so these fallbacks only matter if a future theme omits them. */
   --font-display: var(--t-font-display, system-ui, sans-serif);
@@ -87,6 +88,23 @@ pre,
 blockquote,
 figure {
   margin-bottom: 1rem;
+}
+/* Figure captions: small, muted, and set in the mono face so they read as
+   annotations on the image rather than as body copy. */
+figcaption {
+  margin-top: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+/* medium-zoom (click-to-zoom on figure images): hover affordance.
+   NB: do not zero/disable these elements' transitions under
+   prefers-reduced-motion — medium-zoom finalizes its open/close cleanup on
+   transitionend, which never fires for a 0s/none transition (verified in
+   Chromium); doing so leaves the zoom stuck. The 300 ms ease is modest. */
+.medium-zoom-image {
+  cursor: zoom-in;
 }
 ul,
 ol {

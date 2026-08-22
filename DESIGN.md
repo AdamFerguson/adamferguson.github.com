@@ -151,6 +151,15 @@ state the limitation) applies — see the skill.
 
 ## 6. Change log
 
+- 2026-08-21: Figure images zoom on click (medium-zoom 1.1.0, MIT, ~3.7 kB,
+  bundled locally — no CDN, no runtime third-party requests). Theme-aware
+  scrim via new Tier-1 `--t-overlay` (per-theme warm/cool/neutral near-black).
+  Added focus management (into the zoomed image on open, back to the figure
+  on close) and keyboard support (figure images are focusable; Enter/Space
+  opens) — neither exists in medium-zoom. Do NOT zero these transitions
+  under prefers-reduced-motion: the library finalizes cleanup on
+  transitionend, which never fires for 0s/none transitions. Figcaption now
+  small + muted + `--font-mono` so captions read as annotations.
 - 2026-08-20: Dev-only `ThemeToggle` wired into `Base.astro` (tree-shaken in
   production); theme list centralized in `src/data/themes.mjs` so the toggle
   and screenshot tooling discover new themes automatically. Orphaned
