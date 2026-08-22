@@ -6,9 +6,9 @@
 # and is the seam for future dynamic routes.
 #
 # Secrets (never in this repo — see GitHub → Settings → Secrets and variables):
-#   CLOUDFLARE_API_TOKEN   API token, minimal scope: Account → Workers → Edit
-#                         (a Pages-only token will NOT deploy; update the
-#                         token's scopes if the deploy job fails on auth)
+#   CLOUDFLARE_API_TOKEN   API token, scopes: Account → Workers → Edit and
+#                         Zone (adam-ferguson.com) → DNS → Edit (the cutover
+#                         step removes legacy records; no-op afterwards)
 #   CLOUDFLARE_ACCOUNT_ID  your account UUID (cf-api.com/dashboard → account)
 #
 # Safety:
@@ -21,9 +21,15 @@
 # DNS cutover:
 #   Declared in wrangler.jsonc (routes: custom_domain for apex + www) —
 #   `wrangler deploy` attaches the custom domains and Cloudflare provisions
-#   the DNS records itself. Rollback until you're satisfied: detach the
-#   domains (or delete the routes + redeploy) and the legacy Cloudflare
-#   Pages project serves again.
+#   the DNS records itself; the "Remove legacy DNS records" step clears the
+#   Pages-era CNAMEs exactly once (guarded no-op afterwards).
+#   ROLLED BACK (cutover done 2026-08-22): the legacy records were
+#   CNAME adam-ferguson.com -> adam-ferguson.pages.dev (proxied) and
+#   CNAME www.adam-ferguson.com -> adam-ferguson.pages.dev (proxied),
+#   captured in the deploy job log of the cutover run.
+#   Rollback procedure: re-add those two CNAMEs (zone DNS) and remove the
+#   routes from wrangler.jsonc + redeploy (or delete the custom domains in
+#   the dashboard). The Pages project itself stays up until you delete it.
 
 name: Deploy to Cloudflare Workers
 
@@ -127,17 +133,6 @@ jobs:
         with:
           name: dist
           path: dist
-
-      - name: Remove stray 'adamferguson-github-com' worker (one-time, idempotent)
-        # Leftover from the first unconfigured deploy. 404 = already gone.
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          curl -fsS -X DELETE \
-            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/adamferguson-github-com" \
-            || echo "nothing to clean up"
 
       - name: "Remove legacy DNS records for the cutover (idempotent)"
         # Cloudflare refuses to attach a Worker custom domain while externally
