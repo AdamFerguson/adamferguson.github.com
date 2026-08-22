@@ -6,13 +6,27 @@
 import mediumZoom from "medium-zoom";
 
 export function initImageZoom() {
-  const zoom = mediumZoom("figure img", {
+  // Selector matches nothing until we attach: the zoom must only be enabled
+  // once an image is actually decoded. medium-zoom computes its transform
+  // from the image's natural dimensions, so a click while a lazy image is
+  // still loading produces a mis-centered zoom (top of the image off-
+  // screen). Images therefore join the zoom set on their load event.
+  const zoom = mediumZoom("figure img[data-zoom-ready]", {
     // Theme-aware scrim: --overlay resolves to the active theme's Tier-1
     // token (see themes.css).
     background: "var(--overlay)",
     // Default margin is 0 (image fills the viewport edge-to-edge); leave a
     // small breathing margin all around.
     margin: 24,
+  });
+
+  document.querySelectorAll("figure img").forEach((img) => {
+    const attach = () => zoom.attach(img);
+    if (img.complete && img.naturalWidth > 0) {
+      attach();
+    } else {
+      img.addEventListener("load", attach, { once: true });
+    }
   });
 
   // medium-zoom does no focus management: move focus into the zoomed image
