@@ -8,5 +8,9 @@
     "binding": "ASSETS",
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
-  }
+  },
+  "routes": [
+    { "pattern": "adam-ferguson.com", "custom_domain": true },
+    { "pattern": "www.adam-ferguson.com", "custom_domain": true }
+  ]
 }
