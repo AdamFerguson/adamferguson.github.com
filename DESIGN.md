@@ -151,6 +151,12 @@ state the limitation) applies — see the skill.
 
 ## 6. Change log
 
+- 2026-08-22: `.repo-callout` card for post content (bordered, 3px accent
+  left rule, `--surface-alt` fill, no shadow) — used by the spark-lab post to
+  surface the repo link at the top of the article. Also: the post's inline
+  architecture SVG lost its port numbers and the SGLang box is now
+  "Sparkrun" (the diagram is a single CSS-variable-themed SVG, so the change
+  applies to both light and dark at once).
 - 2026-08-21: Figure images zoom on click (medium-zoom 1.1.0, MIT, ~3.7 kB,
   bundled locally — no CDN, no runtime third-party requests). Theme-aware
   scrim via new Tier-1 `--t-overlay` (per-theme warm/cool/neutral near-black).

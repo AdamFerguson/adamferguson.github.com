@@ -71,7 +71,7 @@ the whole thing is described in one config file.
   <line x1="435" y1="232" x2="420" y2="158" class="arch-line" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#arch-ar)"/>
 </svg>
 
-The short version: **[sparkrun](https://github.com/scitrera/sparkrun)** manages
+The short version: **[sparkrun](https://github.com/spark-arena/sparkrun)** manages
 the containers that run the model — it takes a *recipe* (a file that says which
 inference engine serves the model and how), and it handles the containers,
 the recipes, the networking, and clustering across multiple Sparks. This box
