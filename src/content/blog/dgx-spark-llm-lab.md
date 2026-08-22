@@ -19,61 +19,56 @@ That's what ended up living on my DGX Spark. A single desktop box, quiet enough 
 sit on a desk, now runs a 27B-class model and serves it the way my tools expect — and
 the whole thing is described in one config file.
 
+Everything in this post — the CLI, the model recipes, the dashboards, the docs —
+lives in the [spark-lab](https://github.com/AdamFerguson/spark-lab) repo.
+
 ## The stack, in plain terms
 
-<svg viewBox="0 0 780 320" xmlns="http://www.w3.org/2000/svg" role="img"
-     aria-label="Architecture: a DGX Spark serves a model via SGLang, fronted by a LiteLLM gateway, observed by Prometheus and Grafana, and reached over Tailscale or an optional Cloudflare Tunnel."
-     style="width:100%;height:auto;font-family:inherit;max-width:720px">
+<svg viewBox="0 0 780 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture: a DGX Spark serves a model via SGLang, fronted by a LiteLLM gateway, observed by Prometheus and Grafana, and reached over Tailscale or an optional Cloudflare Tunnel." style="width:100%;height:auto;font-family:inherit;max-width:720px">
+  <style>
+    .arch-label { fill: var(--text); }
+    .arch-sub { fill: var(--text-muted); }
+    .arch-box { fill: var(--surface); stroke: var(--accent); }
+    .arch-box--muted { stroke: var(--text-muted); }
+    .arch-box--alt { fill: var(--surface-alt); }
+    .arch-line { stroke: var(--text-muted); }
+    .arch-line--accent { stroke: var(--accent); }
+    .arch-bound { fill: none; stroke: var(--border); }
+    .arch-mark { fill: var(--text-muted); }
+  </style>
   <defs>
-    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#8a8378"/>
+    <marker id="arch-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="arch-mark"/>
     </marker>
   </defs>
-
-  <!-- Spark boundary -->
-  <text x="40" y="30" fill="#8a8378" font-size="13">NVIDIA DGX Spark (GB10, unified memory)</text>
-  <rect x="20" y="42" width="740" height="150" rx="14" fill="none" stroke="#d8d0c3" stroke-width="1.5" stroke-dasharray="4 4"/>
-
-  <!-- SGLang -->
-  <rect x="60" y="82" width="170" height="70" rx="10" fill="#f5f1ea" stroke="#b4541f" stroke-width="1.5"/>
-  <text x="145" y="112" text-anchor="middle" fill="#2a2622" font-size="15" font-weight="600">SGLang</text>
-  <text x="145" y="132" text-anchor="middle" fill="#8a8378" font-size="12">:30000 · /metrics</text>
-
-  <!-- LiteLLM -->
-  <rect x="305" y="82" width="184" height="70" rx="10" fill="#f5f1ea" stroke="#b4541f" stroke-width="1.5"/>
-  <text x="397" y="107" text-anchor="middle" fill="#2a2622" font-size="15" font-weight="600">LiteLLM gateway</text>
-  <text x="397" y="127" text-anchor="middle" fill="#8a8378" font-size="12">:4000 · keys + spend</text>
-  <text x="397" y="143" text-anchor="middle" fill="#b9b1a4" font-size="11">Postgres · Redis</text>
-
-  <!-- Prometheus -->
-  <rect x="560" y="55" width="160" height="52" rx="10" fill="#f5f1ea" stroke="#8a8378" stroke-width="1.3"/>
-  <text x="640" y="76" text-anchor="middle" fill="#2a2622" font-size="14" font-weight="600">Prometheus</text>
-  <text x="640" y="94" text-anchor="middle" fill="#8a8378" font-size="11.5">:9090</text>
-
-  <!-- Grafana -->
-  <rect x="560" y="120" width="160" height="52" rx="10" fill="#f5f1ea" stroke="#8a8378" stroke-width="1.3"/>
-  <text x="640" y="141" text-anchor="middle" fill="#2a2622" font-size="14" font-weight="600">Grafana</text>
-  <text x="640" y="159" text-anchor="middle" fill="#8a8378" font-size="11.5">:3000</text>
-
-  <!-- arrows: model -> gateway -> metrics -->
-  <line x1="230" y1="117" x2="300" y2="117" stroke="#8a8378" stroke-width="1.5" marker-end="url(#ar)"/>
-  <line x1="489" y1="104" x2="555" y2="81" stroke="#8a8378" stroke-width="1.3" marker-end="url(#ar)"/>
-  <line x1="640" y1="107" x2="640" y2="118" stroke="#8a8378" stroke-width="1.3" marker-end="url(#ar)"/>
-
-  <!-- access paths -->
-  <rect x="60" y="232" width="200" height="54" rx="10" fill="#efe7db" stroke="#b4541f" stroke-width="1.3"/>
-  <text x="160" y="255" text-anchor="middle" fill="#2a2622" font-size="13.5" font-weight="600">Tailscale</text>
-  <text x="160" y="273" text-anchor="middle" fill="#8a8378" font-size="11.5">private mesh</text>
-
-  <rect x="330" y="232" width="210" height="54" rx="10" fill="#efe7db" stroke="#8a8378" stroke-width="1.3"/>
-  <text x="435" y="255" text-anchor="middle" fill="#2a2622" font-size="13.5" font-weight="600">Cloudflare Tunnel</text>
-  <text x="435" y="273" text-anchor="middle" fill="#8a8378" font-size="11.5">optional · public</text>
-
-  <text x="640" y="258" text-anchor="middle" fill="#2a2622" font-size="13.5" font-weight="600">your client</text>
-  <text x="640" y="276" text-anchor="middle" fill="#8a8378" font-size="11.5">OpenAI SDK</text>
-
-  <line x1="175" y1="232" x2="360" y2="158" stroke="#b4541f" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ar)"/>
-  <line x1="435" y1="232" x2="420" y2="158" stroke="#8a8378" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+  <text x="40" y="30" class="arch-sub" font-size="13">NVIDIA DGX Spark (GB10, unified memory)</text>
+  <rect x="20" y="42" width="740" height="150" rx="14" class="arch-bound" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <rect x="60" y="82" width="170" height="70" rx="10" class="arch-box" stroke-width="1.5"/>
+  <text x="145" y="112" text-anchor="middle" class="arch-label" font-size="15" font-weight="600">SGLang</text>
+  <text x="145" y="132" text-anchor="middle" class="arch-sub" font-size="12">:30000 · /metrics</text>
+  <rect x="305" y="82" width="184" height="70" rx="10" class="arch-box" stroke-width="1.5"/>
+  <text x="397" y="107" text-anchor="middle" class="arch-label" font-size="15" font-weight="600">LiteLLM gateway</text>
+  <text x="397" y="127" text-anchor="middle" class="arch-sub" font-size="12">:4000 · keys + spend</text>
+  <text x="397" y="143" text-anchor="middle" class="arch-sub" font-size="11">Postgres · Redis</text>
+  <rect x="560" y="55" width="160" height="52" rx="10" class="arch-box arch-box--muted" stroke-width="1.3"/>
+  <text x="640" y="76" text-anchor="middle" class="arch-label" font-size="14" font-weight="600">Prometheus</text>
+  <text x="640" y="94" text-anchor="middle" class="arch-sub" font-size="11.5">:9090</text>
+  <rect x="560" y="120" width="160" height="52" rx="10" class="arch-box arch-box--muted" stroke-width="1.3"/>
+  <text x="640" y="141" text-anchor="middle" class="arch-label" font-size="14" font-weight="600">Grafana</text>
+  <text x="640" y="159" text-anchor="middle" class="arch-sub" font-size="11.5">:3000</text>
+  <line x1="230" y1="117" x2="300" y2="117" class="arch-line" stroke-width="1.5" marker-end="url(#arch-ar)"/>
+  <line x1="489" y1="104" x2="555" y2="81" class="arch-line" stroke-width="1.3" marker-end="url(#arch-ar)"/>
+  <line x1="640" y1="107" x2="640" y2="118" class="arch-line" stroke-width="1.3" marker-end="url(#arch-ar)"/>
+  <rect x="60" y="232" width="200" height="54" rx="10" class="arch-box arch-box--alt" stroke-width="1.3"/>
+  <text x="160" y="255" text-anchor="middle" class="arch-label" font-size="13.5" font-weight="600">Tailscale</text>
+  <text x="160" y="273" text-anchor="middle" class="arch-sub" font-size="11.5">private mesh</text>
+  <rect x="330" y="232" width="210" height="54" rx="10" class="arch-box arch-box--alt arch-box--muted" stroke-width="1.3"/>
+  <text x="435" y="255" text-anchor="middle" class="arch-label" font-size="13.5" font-weight="600">Cloudflare Tunnel</text>
+  <text x="435" y="273" text-anchor="middle" class="arch-sub" font-size="11.5">optional · public</text>
+  <text x="640" y="258" text-anchor="middle" class="arch-label" font-size="13.5" font-weight="600">your client</text>
+  <text x="640" y="276" text-anchor="middle" class="arch-sub" font-size="11.5">OpenAI SDK</text>
+  <line x1="175" y1="232" x2="360" y2="158" class="arch-line--accent" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#arch-ar)"/>
+  <line x1="435" y1="232" x2="420" y2="158" class="arch-line" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#arch-ar)"/>
 </svg>
 
 The short version: **SGLang** runs the model and speaks an OpenAI-compatible API.
@@ -145,19 +140,17 @@ discrete card would. The monitoring stack accounts for that.)
 ## What you get
 
 A Grafana you can actually read is the payoff. There's an SGLang dashboard —
-throughput, latency, the KV cache, how the speculative decoder is doing — and a
-host-overview one tuned for the GB10.
+request latency, time-to-first-token, throughput, queue depth, cache-hit rate —
+and a host-overview one tuned for the GB10.
 
-<!-- SCREENSHOT: drop your SGLang dashboard here -->
 <figure>
   <img src="/images/spark-lab/grafana-sglang.png" alt="Grafana SGLang dashboard" width="1200" loading="lazy" />
   <figcaption>The SGLang dashboard: live throughput, latency, and cache metrics.</figcaption>
 </figure>
 
-<!-- SCREENSHOT: drop your host-overview dashboard here -->
 <figure>
   <img src="/images/spark-lab/grafana-host.png" alt="Grafana host overview dashboard" width="1200" loading="lazy" />
-  <figcaption>The host overview: CPU, memory, power, and the GPU, in one place.</figcaption>
+  <figcaption>The host overview: CPU, memory, and the GPU, in one place.</figcaption>
 </figure>
 
 Reaching the model is just "point any OpenAI-compatible client at the gateway with
@@ -185,8 +178,8 @@ very different sentences.
 ## Run it on your own
 
 If you've got a DGX Spark — or a rack of them, because it scales across nodes the
-same way — the whole thing lives in one repo: [`spark-lab`](https://github.com/AdamFerguson/spark-lab).
-Clone it, `spark-lab init`, point `config.yaml` at your model, and `spark-lab apply`.
+same way — clone the repo, `spark-lab init`, point `config.yaml` at your model, and
+`spark-lab apply`.
 
 It's MIT-licensed, and it's just me tidying up a setup I actually use — so expect it
 to read more like a well-organized toolbox than a product. The docs cover the
