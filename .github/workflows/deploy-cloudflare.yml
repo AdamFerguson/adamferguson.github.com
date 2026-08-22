@@ -146,7 +146,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler deploy
 
-      - name: Cutover: attach adam-ferguson.com + www to the Worker (one-time)
+      - name: "Cutover: attach adam-ferguson.com + www to the Worker (one-time)"
         # Runs after the deploy so the Worker exists before its domains attach.
         # Prints the API response for each hostname so the outcome is visible
         # in the log. If a hostname is still claimed by the legacy DNS records,
