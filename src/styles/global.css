@@ -436,6 +436,27 @@ body.medium-zoom--opened .site-header {
 .post {
   max-width: 46rem;
 }
+/* Callout card for post content (repo links, etc.): one accent signal on a
+   calm surface — no shadow, no gradient. */
+.repo-callout {
+  margin: 1.75rem 0;
+  padding: 0.9rem 1.15rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--surface-alt);
+}
+.repo-callout p {
+  margin: 0;
+}
+.repo-callout__title {
+  font-weight: 600;
+}
+.repo-callout__sub {
+  margin-top: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
 .post__meta {
   color: var(--text-muted);
   font-size: 0.9rem;

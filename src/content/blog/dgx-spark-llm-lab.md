@@ -1,6 +1,6 @@
 ---
 title: "A little LLM lab on the DGX Spark"
-description: "How I set up a self-hosted, OpenAI-compatible LLM on an NVIDIA DGX Spark — SGLang, a LiteLLM gateway, and Grafana dashboards — all driven by one config file and one command."
+description: "How I set up a self-hosted, OpenAI-compatible LLM on an NVIDIA DGX Spark — a sparkrun-managed model recipe, a LiteLLM gateway, and Grafana dashboards — all driven by one config file and one command."
 date: 2026-08-20
 tags:
   - llm
@@ -19,12 +19,14 @@ That's what ended up living on my DGX Spark. A single desktop box, quiet enough 
 sit on a desk, now runs a 27B-class model and serves it the way my tools expect — and
 the whole thing is described in one config file.
 
-Everything in this post — the CLI, the model recipes, the dashboards, the docs —
-lives in the [spark-lab](https://github.com/AdamFerguson/spark-lab) repo.
+<aside class="repo-callout">
+  <p class="repo-callout__title">Everything in this post lives in the <a href="https://github.com/AdamFerguson/spark-lab">spark-lab</a> repo.</p>
+  <p class="repo-callout__sub">The CLI, the model recipes, the dashboards, and the docs — MIT-licensed, and built to be forked.</p>
+</aside>
 
 ## The stack, in plain terms
 
-<svg viewBox="0 0 780 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture: a DGX Spark serves a model via SGLang, fronted by a LiteLLM gateway, observed by Prometheus and Grafana, and reached over Tailscale or an optional Cloudflare Tunnel." style="width:100%;height:auto;font-family:inherit;max-width:720px">
+<svg viewBox="0 0 780 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture: a DGX Spark serves a model from a sparkrun recipe, fronted by a LiteLLM gateway, observed by Prometheus and Grafana, and reached over Tailscale or an optional Cloudflare Tunnel." style="width:100%;height:auto;font-family:inherit;max-width:720px">
   <style>
     .arch-label { fill: var(--text); }
     .arch-sub { fill: var(--text-muted); }
@@ -44,18 +46,16 @@ lives in the [spark-lab](https://github.com/AdamFerguson/spark-lab) repo.
   <text x="40" y="30" class="arch-sub" font-size="13">NVIDIA DGX Spark (GB10, unified memory)</text>
   <rect x="20" y="42" width="740" height="150" rx="14" class="arch-bound" stroke-width="1.5" stroke-dasharray="4 4"/>
   <rect x="60" y="82" width="170" height="70" rx="10" class="arch-box" stroke-width="1.5"/>
-  <text x="145" y="112" text-anchor="middle" class="arch-label" font-size="15" font-weight="600">SGLang</text>
-  <text x="145" y="132" text-anchor="middle" class="arch-sub" font-size="12">:30000 · /metrics</text>
+  <text x="145" y="112" text-anchor="middle" class="arch-label" font-size="15" font-weight="600">Sparkrun</text>
+  <text x="145" y="132" text-anchor="middle" class="arch-sub" font-size="12">/metrics</text>
   <rect x="305" y="82" width="184" height="70" rx="10" class="arch-box" stroke-width="1.5"/>
   <text x="397" y="107" text-anchor="middle" class="arch-label" font-size="15" font-weight="600">LiteLLM gateway</text>
-  <text x="397" y="127" text-anchor="middle" class="arch-sub" font-size="12">:4000 · keys + spend</text>
+  <text x="397" y="127" text-anchor="middle" class="arch-sub" font-size="12">keys + spend</text>
   <text x="397" y="143" text-anchor="middle" class="arch-sub" font-size="11">Postgres · Redis</text>
   <rect x="560" y="55" width="160" height="52" rx="10" class="arch-box arch-box--muted" stroke-width="1.3"/>
-  <text x="640" y="76" text-anchor="middle" class="arch-label" font-size="14" font-weight="600">Prometheus</text>
-  <text x="640" y="94" text-anchor="middle" class="arch-sub" font-size="11.5">:9090</text>
+  <text x="640" y="86" text-anchor="middle" class="arch-label" font-size="14" font-weight="600">Prometheus</text>
   <rect x="560" y="120" width="160" height="52" rx="10" class="arch-box arch-box--muted" stroke-width="1.3"/>
-  <text x="640" y="141" text-anchor="middle" class="arch-label" font-size="14" font-weight="600">Grafana</text>
-  <text x="640" y="159" text-anchor="middle" class="arch-sub" font-size="11.5">:3000</text>
+  <text x="640" y="151" text-anchor="middle" class="arch-label" font-size="14" font-weight="600">Grafana</text>
   <line x1="230" y1="117" x2="300" y2="117" class="arch-line" stroke-width="1.5" marker-end="url(#arch-ar)"/>
   <line x1="489" y1="104" x2="555" y2="81" class="arch-line" stroke-width="1.3" marker-end="url(#arch-ar)"/>
   <line x1="640" y1="107" x2="640" y2="118" class="arch-line" stroke-width="1.3" marker-end="url(#arch-ar)"/>
@@ -71,21 +71,26 @@ lives in the [spark-lab](https://github.com/AdamFerguson/spark-lab) repo.
   <line x1="435" y1="232" x2="420" y2="158" class="arch-line" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#arch-ar)"/>
 </svg>
 
-The short version: **SGLang** runs the model and speaks an OpenAI-compatible API.
-**LiteLLM** sits in front of it as the thing I actually talk to — it hands out API
-keys, tracks spend, and gives the model a stable name that survives me swapping
-models underneath. **Prometheus** scrapes metrics from the model, the GPU, and the
-host, and **Grafana** turns that into dashboards I can actually read. **Tailscale**
-lets me reach the gateway from any of my machines over a private mesh; a
-**Cloudflare Tunnel** is there if I ever want to share it with a friend.
+The short version: **[sparkrun](https://github.com/scitrera/sparkrun)** manages
+the containers that run the model — it takes a *recipe* (a file that says which
+inference engine serves the model and how), and it handles the containers,
+the recipes, the networking, and clustering across multiple Sparks. This box
+runs the SGLang recipe; want vLLM, or some other engine? That's a different
+recipe, not a rewrite. **LiteLLM** sits in front as the thing I actually talk
+to — it hands out API keys, tracks spend, and gives the model a stable name
+that survives me swapping models underneath. **Prometheus** scrapes metrics
+from the model, the GPU, and the host, and **Grafana** turns that into
+dashboards I can actually read. **Tailscale** lets me reach the gateway from
+any of my machines over a private mesh; a **Cloudflare Tunnel** is there if I
+ever want to share it with a friend.
 
 Nothing here is exotic. The interesting part is how little I have to manage.
 
 ## One config, one command
 
 Instead of a pile of copy-pasted scripts, everything is generated from a single
-`config.yaml`. Pick the model, the ports, which dashboards you want, whether you
-want the tunnel on. Then:
+`config.yaml`. Pick the recipe — which engine serves the model — the ports,
+which dashboards you want, whether you want the tunnel on. Then:
 
 ```
 $ spark-lab init
@@ -177,9 +182,9 @@ very different sentences.
 
 ## Run it on your own
 
-If you've got a DGX Spark — or a rack of them, because it scales across nodes the
-same way — clone the repo, `spark-lab init`, point `config.yaml` at your model, and
-`spark-lab apply`.
+If you've got a DGX Spark — or a rack of them; sparkrun clusters across nodes,
+and the whole lab scales with it — clone the repo, `spark-lab init`, pick a
+recipe for your model, and `spark-lab apply`.
 
 It's MIT-licensed, and it's just me tidying up a setup I actually use — so expect it
 to read more like a well-organized toolbox than a product. The docs cover the

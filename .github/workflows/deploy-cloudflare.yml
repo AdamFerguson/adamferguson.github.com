@@ -1,7 +1,14 @@
-# Deploys the static build to Cloudflare Pages.
+# Deploys the static build to Cloudflare Workers (static assets).
+#
+# The build output (dist/) ships as the Worker's `assets` namespace — served
+# edge-cached from every PoP. Requests that match an asset never execute the
+# Worker script; worker.js only runs for unmatched routes (404 → dist/404.html)
+# and is the seam for future dynamic routes.
 #
 # Secrets (never in this repo — see GitHub → Settings → Secrets and variables):
-#   CLOUDFLARE_API_TOKEN   API token, minimal scope: Account → Cloudflare Pages → Edit
+#   CLOUDFLARE_API_TOKEN   API token, minimal scope: Account → Workers → Edit
+#                         (a Pages-only token will NOT deploy; update the
+#                         token's scopes if the deploy job fails on auth)
 #   CLOUDFLARE_ACCOUNT_ID  your account UUID (cf-api.com/dashboard → account)
 #
 # Safety:
@@ -11,10 +18,15 @@
 #     requests build but can never deploy.
 #   - The job requests only `contents: read`.
 #
-# The legacy GitHub Pages workflow (deploy.yml) stays in place until the DNS
-# cutover is verified; delete it then for a clean rollback path.
+# DNS cutover (one-time, in the cf-api.com dashboard — not done by this repo):
+#   1. Deploy succeeds → the `adam-ferguson` Worker exists.
+#   2. Zone adam-ferguson.com → DNS: change the `@` record to type **Workers**,
+#      target `adam-ferguson`; `www` → CNAME `adam-ferguson.adam-ferguson.workers.dev`
+#      (both proxied). Cloudflare provisions the certificate automatically.
+#   3. Verify, then the legacy Cloudflare Pages project can be deleted.
+#      Rollback until then: point the DNS record back at the Pages project.
 
-name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Workers
 
 on:
   push:
@@ -102,19 +114,8 @@ jobs:
           name: dist
           path: dist
 
-      - name: Ensure Pages project exists
-        # wrangler 4.x does not auto-create projects on deploy. First run creates
-        # it; later runs are a no-op.
+      - name: Deploy to Cloudflare Workers
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          if ! npx wrangler pages project list | grep -q adam-ferguson; then
-            npx wrangler pages project create adam-ferguson --production-branch master
-          fi
-
-      - name: Deploy to Cloudflare Pages
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler pages deploy dist --project-name=adam-ferguson
+        run: npx wrangler deploy
