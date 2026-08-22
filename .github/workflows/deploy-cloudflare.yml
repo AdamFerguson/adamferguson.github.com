@@ -108,11 +108,37 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     steps:
+      - name: Checkout
+        # Required so wrangler.jsonc + worker.js exist; without them wrangler
+        # falls back to onboarding defaults (first deploy landed on a stray
+        # worker named after the checkout directory).
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install dependencies
+        # Uses the pinned wrangler from package-lock, not an unpinned npx fetch.
+        run: npm ci
+
       - name: Download dist artifact
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
+
+      - name: Remove stray 'adamferguson-github-com' worker (one-time, idempotent)
+        # Leftover from the first unconfigured deploy. 404 = already gone.
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          curl -fsS -X DELETE \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/adamferguson-github-com" \
+            || echo "nothing to clean up"
 
       - name: Deploy to Cloudflare Workers
         env:
