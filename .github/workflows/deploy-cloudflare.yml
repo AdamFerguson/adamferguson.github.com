@@ -247,12 +247,14 @@ jobs:
                   return {"ok": False, "http": e.code, "body": e.read().decode()[:300]}
 
           # Safety gate 1: the Worker must be serving both hostnames right now.
+          # (curl, not urllib: Cloudflare 403s the default Python-urllib user
+          # agent on this zone, which would make the gate fail open/closed on
+          # a healthy site.)
+          import subprocess
           for u in ("https://adam-ferguson.com/", "https://www.adam-ferguson.com/"):
-              try:
-                  with urllib.request.urlopen(u, timeout=30) as r:
-                      code = r.status
-              except Exception as e:
-                  code = f"ERR {e}"
+              code = subprocess.run(
+                  ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", u],
+                  capture_output=True, text=True).stdout.strip() or "000"
               print("probe", u, "->", code)
               if code != 200:
                   print("SAFETY: Worker not serving", u, "— NOT deleting Pages project.")
