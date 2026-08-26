@@ -30,7 +30,10 @@ explicitly waived with a reason.
 - [ ] `public/` legacy redirects untouched.
 - [ ] Résumé page: if the résumé was touched, PDF/DOCX render paths still
       build (`npm run check` covers the data side; PDF render is a CI job).
-- [ ] No new third-party assets, fonts, or scripts.
+- [ ] No new third-party assets, fonts, or scripts. (The Cloudflare Web
+      Analytics beacon in `Base.astro` is the only sanctioned runtime
+      addition; it is build-time injected from a CI secret.)
+- [ ] No secrets/tokens in the diff or in any committed file.
 
 ## Report format
 When done, report: pages changed, themes/modes verified, audit output

@@ -7,6 +7,10 @@ const { title, description } = Astro.props;
 const pageTitle = title ? `${title} · ${site.name}` : site.title;
 const theme = defaultTheme;
 const mode = defaultMode;
+// Cloudflare Web Analytics (cookieless, same-vendor as hosting). The token is
+// a build-time env var sourced from a CI secret — it never appears in this
+// repo. Without it (local dev builds) the tag is simply not rendered.
+const analyticsToken = process.env.CF_WEB_ANALYTICS_TOKEN;
 // The dev-only theme switcher is included only in DEV builds, so it is
 // tree-shaken out of production output and never ships to visitors.
 const isDev = import.meta.env.DEV;
@@ -32,6 +36,14 @@ const isDev = import.meta.env.DEV;
         } catch (e) {}
       })();
     </script>
+    {analyticsToken && (
+      <script
+        is:inline
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: analyticsToken })}
+      />
+    )}
     <!-- is:global: these sheets define Tier-1/2 tokens and element-level
          rules that must apply to ALL page content, not just Base's own
          markup. Without it, Astro scopes every selector to this layout's

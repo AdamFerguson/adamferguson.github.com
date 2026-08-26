@@ -15,7 +15,12 @@ colleagues, and fellow engineers. The site should read as **the work of a
 specific, discerning engineer** — not a template.
 
 Content constraints that design must respect:
-- No analytics, no tracking, no third-party scripts (privacy is a feature).
+- Privacy rule (2026-08-26): **no secrets in the repo** — nothing that looks
+  like a credential, token, or API key may live in git history. Secrets belong
+  in CI secrets and are injected at build/deploy time.
+- Analytics: Cloudflare Web Analytics (cookieless, no PII, same-vendor as the
+  hosting). The beacon is injected at build time by `Base.astro` from the
+  `CF_WEB_ANALYTICS_TOKEN` CI secret — never hardcoded in the repo.
 - Legacy URLs must keep working (redirects in `public/`).
 - The résumé PDF/DOCX are generated from the built page; print CSS matters.
 
@@ -151,6 +156,12 @@ state the limitation) applies — see the skill.
 
 ## 6. Change log
 
+- 2026-08-26: Analytics added — Cloudflare Web Analytics (cookieless, free,
+  same-vendor as hosting). The privacy rule was restated: the line is **no
+  secrets in the repo**, not "no tracking"; the beacon token lives in CI
+  secrets and is injected into `<head>` at build time by `Base.astro` (local
+  builds ship no beacon). One-time CI step creates the analytics recipe and
+  prints the token for capture into `CF_WEB_ANALYTICS_TOKEN`.
 - 2026-08-22: `.repo-callout` card for post content (bordered, 3px accent
   left rule, `--surface-alt` fill, no shadow) — used by the spark-lab post to
   surface the repo link at the top of the article. Also: the post's inline

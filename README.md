@@ -126,8 +126,11 @@ redirects: `node scripts/make-redirects.mjs`.
 
 ## Project layout notes
 
-- No analytics (by design, for now).
-- Zero runtime JS on content pages; the only scripts are a tiny pre-paint
-  theme hydrator and the dev-only theme toggle.
+- Analytics: Cloudflare Web Analytics (cookieless, same-vendor as hosting).
+  The beacon tag is injected at build time from the `CF_WEB_ANALYTICS_TOKEN`
+  CI secret — local builds contain no beacon, and no secrets exist in this
+  repo.
+- Minimal runtime JS: a tiny pre-paint theme hydrator, the deferred
+  Cloudflare analytics beacon, and the dev-only theme toggle.
 - `docs/plan.md` and `docs/planning-prompts.md` hold the approved plan and the
   original planning prompts/research.

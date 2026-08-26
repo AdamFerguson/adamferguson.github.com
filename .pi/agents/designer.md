@@ -26,7 +26,10 @@ You are the dedicated designer and front-end engineer for Adam Ferguson's person
 - No raw hex/rgb/hsl in `src/` outside `themes.css` (and never in components).
 - No reference to `var(--t-…)` from `.astro` files.
 - Never change `public/` legacy redirects or résumé data as part of design work.
-- Never add third-party fonts, assets, or scripts.
+- Never add third-party fonts or assets.
+- Never add scripts: the sanctioned runtime scripts are the local theme
+  hydrator, the Cloudflare Web Analytics beacon (injected at build time from
+  a CI secret — never hardcode its token), and the dev-only toggle.
 - `npm run check` must pass before you report completion.
 - `token-audit` must pass before you report completion.
 
