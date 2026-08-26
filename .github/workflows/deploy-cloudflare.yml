@@ -216,3 +216,60 @@ jobs:
             curl -s -o /dev/null -w "status=%{http_code}\n" "$u" || echo "probe failed"
             curl -sI "$u" | grep -iE "cf-ray|^server" || true
           done
+
+      - name: "Delete legacy Cloudflare Pages project (one-time, guarded)"
+        # Removes the old Pages project now that the Worker owns both hostnames.
+        # Refuses to delete unless both hostnames are serving 200 right now, and
+        # is a no-op once the project is gone (404). Reports cleanly if the token
+        # lacks Pages scope, with the manual dashboard path as fallback.
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, sys, urllib.request, urllib.error
+
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          acct = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          api = "https://api.cloudflare.com/client/v4"
+          proj = "adam-ferguson"
+
+          def call(method, path, body=None):
+              req = urllib.request.Request(
+                  api + path, method=method,
+                  data=json.dumps(body).encode() if body else None,
+                  headers={"Authorization": f"Bearer {token}",
+                           "Content-Type": "application/json"})
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      return {"ok": True, "resp": json.load(r)}
+              except urllib.error.HTTPError as e:
+                  return {"ok": False, "http": e.code, "body": e.read().decode()[:300]}
+
+          # Safety gate 1: the Worker must be serving both hostnames right now.
+          for u in ("https://adam-ferguson.com/", "https://www.adam-ferguson.com/"):
+              try:
+                  with urllib.request.urlopen(u, timeout=30) as r:
+                      code = r.status
+              except Exception as e:
+                  code = f"ERR {e}"
+              print("probe", u, "->", code)
+              if code != 200:
+                  print("SAFETY: Worker not serving", u, "— NOT deleting Pages project.")
+                  sys.exit(0)
+
+          # Safety gate 2: read the Pages project back before touching it.
+          g = call("GET", f"/accounts/{acct}/pages/projects/{proj}")
+          if not g["ok"]:
+              if g.get("http") == 404:
+                  print("Pages project already gone — nothing to delete.")
+              else:
+                  print("Could not read Pages project (scope?):", json.dumps(g)[:300])
+                  print("Manual: cf-api.com -> Pages -> adam-ferguson -> Overview -> Delete project")
+              sys.exit(0)
+          print("pages project:", json.dumps({k: g["resp"]["result"].get(k)
+                                            for k in ("name", "domain", "production_branch", "build_config")})[:400])
+
+          d = call("DELETE", f"/accounts/{acct}/pages/projects/{proj}")
+          print("delete pages project:", json.dumps(d)[:400])
+          PYEOF
