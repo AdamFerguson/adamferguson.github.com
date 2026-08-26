@@ -18,18 +18,18 @@
 #     requests build but can never deploy.
 #   - The job requests only `contents: read`.
 #
-# DNS cutover:
-#   Declared in wrangler.jsonc (routes: custom_domain for apex + www) —
-#   `wrangler deploy` attaches the custom domains and Cloudflare provisions
-#   the DNS records itself; the "Remove legacy DNS records" step clears the
-#   Pages-era CNAMEs exactly once (guarded no-op afterwards).
-#   ROLLED BACK (cutover done 2026-08-22): the legacy records were
-#   CNAME adam-ferguson.com -> adam-ferguson.pages.dev (proxied) and
-#   CNAME www.adam-ferguson.com -> adam-ferguson.pages.dev (proxied),
-#   captured in the deploy job log of the cutover run.
-#   Rollback procedure: re-add those two CNAMEs (zone DNS) and remove the
-#   routes from wrangler.jsonc + redeploy (or delete the custom domains in
-#   the dashboard). The Pages project itself stays up until you delete it.
+# DNS cutover (done 2026-08-22, recorded for history):
+#   Domains are declared in wrangler.jsonc (routes: custom_domain for apex +
+#   www) — `wrangler deploy` attaches them and Cloudflare provisions the DNS
+#   records itself. The "Remove legacy DNS records" step is a guarded no-op
+#   now; if stale zone records ever reappear (e.g. a re-added Pages CNAME) it
+#   clears them automatically so the deploy stays unblocked.
+#   Legacy records at cutover were:
+#     CNAME adam-ferguson.com -> adam-ferguson.pages.dev (proxied)
+#     CNAME www.adam-ferguson.com -> adam-ferguson.pages.dev (proxied)
+#   The legacy Pages project "adam-ferguson" was deleted on 2026-08-22 (deploy
+#   run 32973434950). Going back to Pages would mean recreating the project
+#   from this repo, re-adding those CNAMEs, and removing the routes here.
 
 name: Deploy to Cloudflare Workers
 
@@ -216,62 +216,3 @@ jobs:
             curl -s -o /dev/null -w "status=%{http_code}\n" "$u" || echo "probe failed"
             curl -sI "$u" | grep -iE "cf-ray|^server" || true
           done
-
-      - name: "Delete legacy Cloudflare Pages project (one-time, guarded)"
-        # Removes the old Pages project now that the Worker owns both hostnames.
-        # Refuses to delete unless both hostnames are serving 200 right now, and
-        # is a no-op once the project is gone (404). Reports cleanly if the token
-        # lacks Pages scope, with the manual dashboard path as fallback.
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          python3 - <<'PYEOF'
-          import json, os, sys, urllib.request, urllib.error
-
-          token = os.environ["CLOUDFLARE_API_TOKEN"]
-          acct = os.environ["CLOUDFLARE_ACCOUNT_ID"]
-          api = "https://api.cloudflare.com/client/v4"
-          proj = "adam-ferguson"
-
-          def call(method, path, body=None):
-              req = urllib.request.Request(
-                  api + path, method=method,
-                  data=json.dumps(body).encode() if body else None,
-                  headers={"Authorization": f"Bearer {token}",
-                           "Content-Type": "application/json"})
-              try:
-                  with urllib.request.urlopen(req, timeout=30) as r:
-                      return {"ok": True, "resp": json.load(r)}
-              except urllib.error.HTTPError as e:
-                  return {"ok": False, "http": e.code, "body": e.read().decode()[:300]}
-
-          # Safety gate 1: the Worker must be serving both hostnames right now.
-          # (curl, not urllib: Cloudflare 403s the default Python-urllib user
-          # agent on this zone, which would make the gate fail open/closed on
-          # a healthy site.)
-          import subprocess
-          for u in ("https://adam-ferguson.com/", "https://www.adam-ferguson.com/"):
-              code = subprocess.run(
-                  ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", u],
-                  capture_output=True, text=True).stdout.strip() or "000"
-              print("probe", u, "->", code)
-              if code != "200":
-                  print("SAFETY: Worker not serving", u, "— NOT deleting Pages project.")
-                  sys.exit(0)
-
-          # Safety gate 2: read the Pages project back before touching it.
-          g = call("GET", f"/accounts/{acct}/pages/projects/{proj}")
-          if not g["ok"]:
-              if g.get("http") == 404:
-                  print("Pages project already gone — nothing to delete.")
-              else:
-                  print("Could not read Pages project (scope?):", json.dumps(g)[:300])
-                  print("Manual: cf-api.com -> Pages -> adam-ferguson -> Overview -> Delete project")
-              sys.exit(0)
-          print("pages project:", json.dumps({k: g["resp"]["result"].get(k)
-                                            for k in ("name", "domain", "production_branch", "build_config")})[:400])
-
-          d = call("DELETE", f"/accounts/{acct}/pages/projects/{proj}")
-          print("delete pages project:", json.dumps(d)[:400])
-          PYEOF
