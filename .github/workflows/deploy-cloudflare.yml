@@ -256,7 +256,7 @@ jobs:
                   ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", u],
                   capture_output=True, text=True).stdout.strip() or "000"
               print("probe", u, "->", code)
-              if code != 200:
+              if code != "200":
                   print("SAFETY: Worker not serving", u, "— NOT deleting Pages project.")
                   sys.exit(0)
 
