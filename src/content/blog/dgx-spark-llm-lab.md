@@ -189,3 +189,10 @@ recipe for your model, and `spark-lab apply`.
 It's MIT-licensed, and it's just me tidying up a setup I actually use — so expect it
 to read more like a well-organized toolbox than a product. The docs cover the
 architecture, day-2 operations, model recipes, and networking.
+
+## Two Sparks, one lab
+
+This post is about one box. I have a second Spark on the same tailnet, and the
+next step is having it join the lab: bigger models that don't fit on a single
+machine, split across two, behind the same gateway. I'll write up how that goes
+when it's actually running.
